@@ -69,7 +69,7 @@ func renderSetup(width, height int, values []string, cursor int, errMsg string, 
 	}
 
 	fields.WriteString("\n")
-	fields.WriteString(footerStyle.Render("Tab/↑↓ field · Ctrl+U clear · Ctrl+H show key · Enter save · Esc back · q quit"))
+	fields.WriteString(footerStyle.Render("Tab/↑↓ field · Ctrl+U clear · Ctrl+H show key · Ctrl+G lab guide · Enter save · Esc back · q quit"))
 
 	left := panelStyle.Width(min(width/2, width-4)).Render(fields.String())
 
@@ -93,7 +93,7 @@ func renderSplash(width, height int) string {
 
 	sub := subtitleStyle.Render("Workshop Lab CLI")
 	desc := instructionStyle.Render("Agentic Workflows & Searchable Applications")
-	hint := footerStyle.Render("Press any key to continue · q quit")
+	hint := footerStyle.Render("Press any key to continue · g open lab guide · q quit")
 
 	center := lipgloss.NewStyle().Width(width).Align(lipgloss.Center)
 

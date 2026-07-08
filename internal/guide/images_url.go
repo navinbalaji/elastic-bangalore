@@ -9,6 +9,12 @@ import (
 // Default workshop screenshots on elastic/meetups (viewable in browser).
 const defaultImagesBaseURL = "https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/"
 
+// LabGuideWebURL is the full lab guide on GitHub (open in browser).
+const LabGuideWebURL = defaultImagesBaseURL + "lab-guide.md"
+
+// WorkshopRepoURL is the workshop folder on GitHub.
+const WorkshopRepoURL = defaultImagesBaseURL
+
 // ImagesBaseURL returns the prefix for resolving images/foo.png links.
 func ImagesBaseURL() string {
 	if u := strings.TrimSpace(os.Getenv("LAB_GUIDE_IMAGES_BASE_URL")); u != "" {

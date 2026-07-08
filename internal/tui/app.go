@@ -165,6 +165,9 @@ func (a *App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if msg.String() == "q" || msg.String() == "ctrl+c" {
 				return a, tea.Quit
 			}
+			if msg.String() == "g" {
+				return a, a.openLabGuideInBrowser()
+			}
 			if a.splashLeaving {
 				return a, nil
 			}
@@ -342,6 +345,8 @@ func (a *App) handleSetupKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "ctrl+c", "q":
 		return a, tea.Quit
+	case "ctrl+g":
+		return a, a.openLabGuideInBrowser()
 	case "esc":
 		if a.cfg != nil {
 			a.screen = screenWorkshop
@@ -475,6 +480,8 @@ func (a *App) handleWorkshopKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return a, a.copyStepImageURL()
 	case "O", "ctrl+o":
 		return a, a.openStepImageInBrowser()
+	case "g":
+		return a, a.openLabGuideInBrowser()
 	}
 
 	var cmd tea.Cmd
@@ -606,7 +613,7 @@ func (a *App) renderWorkshop() string {
 	right := panelStyle.Width(a.width-leftWidth-6).Height(a.height-bannerHeight-4).
 		Render(rightHeader + "\n\n" + rightBody)
 
-	footer := footerStyle.Render("↑↓ step · PgUp/PgDn scroll · y code · c text · o image URL · O open · Space · Enter · r · q quit")
+	footer := footerStyle.Render("↑↓ step · PgUp/PgDn scroll · y code · c text · o image · O open image · g lab guide · Space · Enter · r · q quit")
 	passed, total := steps.ProgressCounts(a.states)
 	footer = footerStyle.Render(fmt.Sprintf("Progress %d/%d · ", passed, total)) + footer
 	if a.verifyMsg != "" {
@@ -738,6 +745,19 @@ func (a *App) openStepImageInBrowser() tea.Cmd {
 	}
 }
 
+func (a *App) openLabGuideInBrowser() tea.Cmd {
+	return func() tea.Msg {
+		url := guide.LabGuideWebURL
+		if err := clipboard.OpenURL(url); err != nil {
+			if clipErr := clipboard.Write(url); clipErr != nil {
+				return clipboardMsg{errText: err.Error()}
+			}
+			return clipboardMsg{ok: true, detail: "Could not open browser — copied lab guide URL to clipboard"}
+		}
+		return clipboardMsg{ok: true, detail: "Opened lab guide in browser"}
+	}
+}
+
 func (a *App) handleCompletionKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "ctrl+c", "q":
@@ -749,6 +769,8 @@ func (a *App) handleCompletionKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return a, nil
 	case "d", "enter":
 		return a, a.downloadCertificate()
+	case "g":
+		return a, a.openLabGuideInBrowser()
 	}
 	return a, nil
 }

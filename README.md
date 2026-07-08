@@ -174,6 +174,8 @@ On next launch, your session resumes from `session.json` (cursor position, pass/
 | c | Copy step instructions to clipboard |
 | o | Copy screenshot URL to clipboard (cycles if multiple images) |
 | O / Ctrl+O | Open screenshot in browser |
+| g | Open full lab guide on GitHub in browser |
+| Ctrl+G | Open lab guide (from setup screen) |
 | PgUp / PgDn | Scroll instructions panel |
 | Enter | Test connection & save (setup), verify step (workshop), or download certificate (completion) |
 | d | Download certificate (completion screen) |
