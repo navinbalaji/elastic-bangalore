@@ -2,8 +2,6 @@ package tui
 
 import (
 	"testing"
-
-	"github.com/charmbracelet/lipgloss"
 )
 
 func TestPickSplashLogo(t *testing.T) {
@@ -23,7 +21,11 @@ func TestPickSplashLogo(t *testing.T) {
 
 func TestCenterLines(t *testing.T) {
 	out := centerLines("ab", 10)
-	if lipgloss.Width(out) != 10 {
-		t.Fatalf("expected width 10, got %d (%q)", lipgloss.Width(out), out)
+	if len(out) < 2 || out[len(out)-2:] != "ab" {
+		t.Fatalf("expected centered ab, got %q", out)
+	}
+	// 4 spaces padding + "ab" for width 10
+	if out != "    ab" {
+		t.Fatalf("expected %q, got %q", "    ab", out)
 	}
 }

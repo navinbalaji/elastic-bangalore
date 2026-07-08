@@ -46,9 +46,14 @@ jobs:
           go-version-file: go.mod
 
       - name: Test
+        shell: bash
         run: |
           cp lab-guide.md internal/guide/assets/lab-guide.md
-          go test ./...
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            go test -ldflags="-linkmode=external" ./...
+          else
+            go test ./...
+          fi
 
       - name: Build archive
         shell: bash
