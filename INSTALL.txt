@@ -1,0 +1,61 @@
+Elastic Bangalore Workshop CLI — Quick start
+==========================================
+
+Pick the download for your system from GitHub Releases, extract, then run the binary.
+
+macOS (all Macs — Apple Silicon or Intel)
+-----------------------------------------
+1. Download: elastic-bangalore_VERSION_darwin_universal.tar.gz  (recommended)
+   OR: elastic-bangalore_VERSION_darwin_arm64.tar.gz (M1/M2/M3/M4)
+   OR: elastic-bangalore_VERSION_darwin_amd64.tar.gz (Intel Mac)
+
+2. Open Terminal and run:
+   tar -xzf elastic-bangalore_*.tar.gz
+   cd elastic-bangalore_*   # if extracted to a folder; else stay in current dir
+   chmod +x elastic-bangalore
+   ./elastic-bangalore
+
+3. If macOS blocks the app ("cannot be opened"):
+   xattr -cr ./elastic-bangalore
+   ./elastic-bangalore
+   Or: right-click the file → Open → Open once.
+
+Linux (x86_64 or ARM64)
+-----------------------
+1. Download:
+   elastic-bangalore_VERSION_linux_amd64.tar.gz   (most PCs, cloud VMs)
+   elastic-bangalore_VERSION_linux_arm64.tar.gz   (Raspberry Pi, ARM servers)
+
+2. In a terminal:
+   tar -xzf elastic-bangalore_*.tar.gz
+   chmod +x elastic-bangalore
+   ./elastic-bangalore
+
+Windows (64-bit)
+----------------
+1. Download:
+   elastic-bangalore_VERSION_windows_amd64.zip   (most PCs)
+   elastic-bangalore_VERSION_windows_arm64.zip   (Surface Pro X, ARM PCs)
+
+2. Right-click the zip → Extract All.
+
+3. Open PowerShell in that folder:
+   .\elastic-bangalore.exe
+
+   Or Command Prompt:
+   elastic-bangalore.exe
+
+First launch
+------------
+Enter your Elastic Cloud credentials when prompted:
+  • Elasticsearch URL or Cloud ID
+  • API key (base64)
+  • Kibana URL
+
+Config is saved to:
+  macOS/Linux: ~/.elastic-bangalore/config.yaml
+  Windows:     %USERPROFILE%\.elastic-bangalore\config.yaml
+
+No Elastic Cloud account? Sign up free at https://cloud.elastic.co
+
+Need help? See README.md in this folder or the GitHub repo.

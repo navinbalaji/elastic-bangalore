@@ -1,0 +1,15 @@
+# Binaries
+/elastic-bangalore
+/elastic-bangalore.exe
+*.exe
+dist/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Session (local only — never commit)
+.elastic-bangalore/

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Build elastic-bangalore (macOS-safe).
+set -euo pipefail
+cd "$(dirname "$0")"
+
+OUTPUT="${1:-elastic-bangalore}"
+PKG="./cmd/elastic-bangalore/"
+
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  # Go 1.21 on macOS 15+ omits LC_UUID → dyld abort. External linking fixes it.
+  exec go build -ldflags="-linkmode=external" -o "$OUTPUT" "$PKG"
+fi
+
+exec go build -o "$OUTPUT" "$PKG"
