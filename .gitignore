@@ -10,6 +10,7 @@ dist/
 # IDE
 .idea/
 .vscode/
+.pnpm-store/
 
 # Session (local only — never commit)
 .elastic-bangalore/

@@ -1,0 +1,383 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_root.js",
+      "_server.js",
+      "_internal.js",
+      "_shared-server.js"
+    ]
+  },
+  "_auth.js": {
+    "file": "chunks/auth.js",
+    "name": "auth",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client"
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_false.js": {
+    "file": "chunks/false.js",
+    "name": "false"
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index",
+    "imports": [
+      "_false.js"
+    ]
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_index3.js": {
+    "file": "chunks/index3.js",
+    "name": "index",
+    "imports": [
+      "_shared-server.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_root.js",
+      "_server.js",
+      "_shared-server.js"
+    ],
+    "dynamicImports": [
+      "src/hooks.server.ts"
+    ]
+  },
+  "_root.js": {
+    "file": "chunks/root.js",
+    "name": "root",
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "_server.js": {
+    "file": "chunks/server.js",
+    "name": "server"
+  },
+  "_session-cookie.js": {
+    "file": "chunks/session-cookie.js",
+    "name": "session-cookie"
+  },
+  "_session.js": {
+    "file": "chunks/session.js",
+    "name": "session",
+    "imports": [
+      "_steps.js"
+    ]
+  },
+  "_shared-server.js": {
+    "file": "chunks/shared-server.js",
+    "name": "shared-server"
+  },
+  "_state.svelte.js": {
+    "file": "chunks/state.svelte.js",
+    "name": "state.svelte",
+    "imports": [
+      "_index.js",
+      "_exports.js",
+      "_root.js"
+    ]
+  },
+  "_steps.js": {
+    "file": "chunks/steps.js",
+    "name": "steps"
+  },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils",
+    "imports": [
+      "_utils2.js"
+    ]
+  },
+  "_utils2.js": {
+    "file": "chunks/utils2.js",
+    "name": "utils"
+  },
+  "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
+    "file": "remote-entry.js",
+    "name": "remote-entry",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_false.js",
+      "_server.js"
+    ]
+  },
+  "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_state.svelte.js",
+      "_exports.js",
+      "_utils2.js",
+      "_index2.js",
+      "_root.js"
+    ]
+  },
+  "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "node_modules/.pnpm/@sveltejs+kit@2.69.1_@opentelemetry+api@1.9.1_@sveltejs+vite-plugin-svelte@5.1.1_svelte_1e1233233dae8ab6f3b15f716ae06949/node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_false.js",
+      "_server.js",
+      "_exports.js",
+      "_utils2.js",
+      "_index2.js",
+      "_shared-server.js",
+      "_internal.js"
+    ]
+  },
+  "src/hooks.server.ts": {
+    "file": "entries/hooks.server.js",
+    "name": "entries/hooks.server",
+    "src": "src/hooks.server.ts",
+    "isEntry": true,
+    "isDynamicEntry": true
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "css": [
+      "_app/immutable/assets/_layout.D2uvrF2J.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_exports.js",
+      "_utils2.js",
+      "_root.js",
+      "_state.svelte.js"
+    ]
+  },
+  "src/routes/admin/+page.server.ts": {
+    "file": "entries/pages/admin/_page.server.ts.js",
+    "name": "entries/pages/admin/_page.server.ts",
+    "src": "src/routes/admin/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_auth.js"
+    ]
+  },
+  "src/routes/admin/+page.svelte": {
+    "file": "entries/pages/admin/_page.svelte.js",
+    "name": "entries/pages/admin/_page.svelte",
+    "src": "src/routes/admin/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/api/admin/doubts/+server.ts": {
+    "file": "entries/endpoints/api/admin/doubts/_server.ts.js",
+    "name": "entries/endpoints/api/admin/doubts/_server.ts",
+    "src": "src/routes/api/admin/doubts/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_auth.js"
+    ]
+  },
+  "src/routes/api/admin/login/+server.ts": {
+    "file": "entries/endpoints/api/admin/login/_server.ts.js",
+    "name": "entries/endpoints/api/admin/login/_server.ts",
+    "src": "src/routes/api/admin/login/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_auth.js",
+      "_shared-server.js"
+    ]
+  },
+  "src/routes/api/admin/participants/+server.ts": {
+    "file": "entries/endpoints/api/admin/participants/_server.ts.js",
+    "name": "entries/endpoints/api/admin/participants/_server.ts",
+    "src": "src/routes/api/admin/participants/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_auth.js",
+      "_session.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/api/admin/participants/[sessionId]/blink/+server.ts": {
+    "file": "entries/endpoints/api/admin/participants/_sessionId_/blink/_server.ts.js",
+    "name": "entries/endpoints/api/admin/participants/_sessionId_/blink/_server.ts",
+    "src": "src/routes/api/admin/participants/[sessionId]/blink/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_auth.js"
+    ]
+  },
+  "src/routes/api/join/+server.ts": {
+    "file": "entries/endpoints/api/join/_server.ts.js",
+    "name": "entries/endpoints/api/join/_server.ts",
+    "src": "src/routes/api/join/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_steps.js",
+      "_session.js",
+      "_session-cookie.js"
+    ]
+  },
+  "src/routes/api/resume/+server.ts": {
+    "file": "entries/endpoints/api/resume/_server.ts.js",
+    "name": "entries/endpoints/api/resume/_server.ts",
+    "src": "src/routes/api/resume/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_session-cookie.js",
+      "_session.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_session.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/credentials/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/credentials/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/credentials/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/credentials/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/doubts/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/doubts/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/doubts/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/doubts/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/mark/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/mark/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/mark/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/mark/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_session.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/stuck/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/stuck/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/stuck/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/stuck/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js"
+    ]
+  },
+  "src/routes/api/session/[sessionId]/verify/+server.ts": {
+    "file": "entries/endpoints/api/session/_sessionId_/verify/_server.ts.js",
+    "name": "entries/endpoints/api/session/_sessionId_/verify/_server.ts",
+    "src": "src/routes/api/session/[sessionId]/verify/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index3.js",
+      "_client.js",
+      "_session.js",
+      "_steps.js"
+    ]
+  },
+  "src/routes/workshop/[sessionId]/+page.server.ts": {
+    "file": "entries/pages/workshop/_sessionId_/_page.server.ts.js",
+    "name": "entries/pages/workshop/_sessionId_/_page.server.ts",
+    "src": "src/routes/workshop/[sessionId]/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_session-cookie.js"
+    ]
+  },
+  "src/routes/workshop/[sessionId]/+page.svelte": {
+    "file": "entries/pages/workshop/_sessionId_/_page.svelte.js",
+    "name": "entries/pages/workshop/_sessionId_/_page.svelte",
+    "src": "src/routes/workshop/[sessionId]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_exports.js",
+      "_utils2.js",
+      "_root.js",
+      "_state.svelte.js"
+    ]
+  },
+  "src/routes/workshop/[sessionId]/setup/+page.server.ts": {
+    "file": "entries/pages/workshop/_sessionId_/setup/_page.server.ts.js",
+    "name": "entries/pages/workshop/_sessionId_/setup/_page.server.ts",
+    "src": "src/routes/workshop/[sessionId]/setup/+page.server.ts",
+    "isEntry": true,
+    "imports": [
+      "_session-cookie.js"
+    ]
+  },
+  "src/routes/workshop/[sessionId]/setup/+page.svelte": {
+    "file": "entries/pages/workshop/_sessionId_/setup/_page.svelte.js",
+    "name": "entries/pages/workshop/_sessionId_/setup/_page.svelte",
+    "src": "src/routes/workshop/[sessionId]/setup/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_exports.js",
+      "_utils2.js",
+      "_root.js",
+      "_state.svelte.js"
+    ]
+  },
+  "virtual:__sveltekit/env": {
+    "file": "env.js",
+    "name": "env",
+    "src": "virtual:__sveltekit/env",
+    "isEntry": true
+  }
+}
