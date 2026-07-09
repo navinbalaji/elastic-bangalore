@@ -239,9 +239,6 @@
 					{loading ? '…' : 'Login'}
 				</button>
 			</form>
-			<p style="font-size:0.8rem;color:var(--muted);margin:1rem 0 0">
-				Set <code>ADMIN_PASSWORD</code> in your environment.
-			</p>
 		</div>
 	{:else}
 		<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">

@@ -60,6 +60,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			label: st.step.label,
 			kind: st.step.kind,
 			instructions: st.step.instructions,
+			download: st.step.download ?? null,
 			status: st.status,
 			reason: st.reason,
 			marked: st.marked

@@ -4,12 +4,18 @@
 	import { page } from '$app/stores';
 	import { getCredentials, hasCredentials } from '$lib/credentials-storage';
 
+	type StepDownload = {
+		href: string;
+		label: string;
+	};
+
 	type StepRow = {
 		id: string;
 		module: string;
 		label: string;
 		kind: string;
 		instructions: string;
+		download: StepDownload | null;
 		status: string;
 		reason: string;
 		marked: boolean;
@@ -421,6 +427,17 @@
 					<div style="font-size:0.8rem;color:var(--muted)">{current.module}</div>
 					<h2 style="margin:0.25rem 0 0">{current.label}</h2>
 				</div>
+
+				{#if current.download}
+					<div class="step-download">
+						<p>You'll need this dataset for this step:</p>
+						<a
+							class="btn btn-secondary step-download-btn"
+							href={current.download.href}
+							download
+						>{current.download.label}</a>
+					</div>
+				{/if}
 
 				<div class="markdown" role="presentation" onclick={onGuideClick}>
 					{@html data.guideHtml}

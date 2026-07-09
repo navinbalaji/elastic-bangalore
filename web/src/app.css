@@ -368,6 +368,29 @@ button {
 	min-width: 7rem;
 }
 
+.step-download {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.75rem 1rem;
+	margin-bottom: 1rem;
+	padding: 0.85rem 1rem;
+	border-radius: 8px;
+	border: 1px solid var(--border);
+	background: var(--surface-2);
+}
+
+.step-download p {
+	margin: 0;
+	font-size: 0.9rem;
+	color: var(--muted);
+}
+
+.step-download-btn {
+	text-decoration: none;
+	font-size: 0.85rem;
+}
+
 .workshop-actions {
 	display: flex;
 	flex-wrap: wrap;

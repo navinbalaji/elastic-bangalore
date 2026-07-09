@@ -69,7 +69,11 @@ Expected: content field type is "text".`
 		module: 'Module 2 — Semantic Text',
 		label: 'Upload Harry Potter PDF in Kibana',
 		kind: 'guide',
-		instructions: `Upload harrypotter PDF with semantic_text field content_jina in Kibana File Uploader.`
+		instructions: `Download the Harry Potter chapter PDF, then upload it in Kibana File Uploader with semantic_text field content_jina.`,
+		download: {
+			href: '/harrypotter_sorcerers_stone_chapter_5-workshop-asset.pdf',
+			label: "Download Harry Potter — Chapter 5 (PDF)"
+		}
 	},
 	{
 		id: 'm2-verify-index',
@@ -83,7 +87,11 @@ Expected: content field type is "text".`
 		module: 'Module 3 — Multilingual ES|QL',
 		label: 'Upload properties-dataset.csv',
 		kind: 'guide',
-		instructions: `Upload properties-dataset.csv to index properties with semantic_text mapping.`
+		instructions: `Download properties-dataset.csv, then upload it in Kibana File Uploader with semantic_text mapping.`,
+		download: {
+			href: '/properties-dataset.csv',
+			label: 'Download properties-dataset.csv'
+		}
 	},
 	{
 		id: 'm3-verify-index',
