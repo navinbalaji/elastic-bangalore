@@ -76,7 +76,7 @@
 	let participants = $state<Participant[]>([]);
 	let doubts = $state<Doubt[]>([]);
 	let blinking = $state<Record<string, boolean>>({});
-	let activeTab = $state<'progress' | 'questions'>('progress');
+	let activeTab = $state<'progress' | 'stuck' | 'questions'>('progress');
 	let activeModuleIndex = $state(0);
 	let refreshing = $state(false);
 	let resetModalOpen = $state(false);
@@ -84,11 +84,21 @@
 	let resetLoading = $state(false);
 	let resetError = $state('');
 	let resetSuccess = $state('');
+	let editingDoubtId = $state<string | null>(null);
+	let editingDoubtMessage = $state('');
+	let doubtActionId = $state<string | null>(null);
 	let doubtsPollTimer: ReturnType<typeof setInterval> | undefined;
+	let participantsPollTimer: ReturnType<typeof setInterval> | undefined;
 	const DOUBTS_POLL_MS = 5000;
+	const PARTICIPANTS_POLL_MS = 5000;
 
 	const moduleRosters = $derived(buildModuleRosters(participants));
 	const activeRoster = $derived(moduleRosters[activeModuleIndex] ?? null);
+	const stuckParticipants = $derived(
+		participants
+			.filter((p) => p.stuckAt)
+			.sort((a, b) => new Date(b.stuckAt!).getTime() - new Date(a.stuckAt!).getTime())
+	);
 
 	function buildModuleRosters(list: Participant[]): ModuleRoster[] {
 		return MODULE_ORDER.map((moduleName, index) => {
@@ -241,15 +251,63 @@
 		}
 	}
 
+	function startEditDoubt(doubt: Doubt) {
+		editingDoubtId = doubt.id;
+		editingDoubtMessage = doubt.message;
+	}
+
+	function cancelEditDoubt() {
+		editingDoubtId = null;
+		editingDoubtMessage = '';
+	}
+
+	async function saveEditDoubt(doubtId: string) {
+		const message = editingDoubtMessage.trim();
+		if (!message) return;
+
+		doubtActionId = doubtId;
+		try {
+			const res = await fetch(`/api/admin/doubts/${doubtId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ message })
+			});
+			const json = await res.json();
+			if (!res.ok) return;
+			doubts = doubts.map((d) => (d.id === doubtId ? json.doubt : d));
+			cancelEditDoubt();
+		} finally {
+			doubtActionId = null;
+		}
+	}
+
+	async function deleteDoubt(doubtId: string) {
+		if (!confirm('Delete this question?')) return;
+
+		doubtActionId = doubtId;
+		try {
+			const res = await fetch(`/api/admin/doubts/${doubtId}`, { method: 'DELETE' });
+			if (!res.ok) return;
+			doubts = doubts.filter((d) => d.id !== doubtId);
+			if (editingDoubtId === doubtId) cancelEditDoubt();
+		} finally {
+			doubtActionId = null;
+		}
+	}
+
 	onMount(() => {
 		if (data.authed) {
 			void loadParticipants();
 			void loadDoubts();
+			participantsPollTimer = setInterval(() => {
+				void loadParticipants();
+			}, PARTICIPANTS_POLL_MS);
 			doubtsPollTimer = setInterval(() => {
 				void loadDoubts();
 			}, DOUBTS_POLL_MS);
 		}
 		return () => {
+			if (participantsPollTimer) clearInterval(participantsPollTimer);
 			if (doubtsPollTimer) clearInterval(doubtsPollTimer);
 		};
 	});
@@ -293,7 +351,8 @@
 			<div>
 				<h1 style="margin:0">Workshop admin</h1>
 				<p style="color:var(--muted);margin:0.25rem 0 0">
-					{participants.length} participants · {doubts.length} questions · questions refresh every 5s
+					{participants.length} participants · {stuckParticipants.length} stuck · {doubts.length}
+					questions · auto-refresh every 5s
 				</p>
 			</div>
 			<div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
@@ -315,6 +374,19 @@
 				onclick={() => (activeTab = 'progress')}
 			>
 				Module progress
+			</button>
+			<button
+				type="button"
+				class="admin-tab"
+				class:active={activeTab === 'stuck'}
+				role="tab"
+				aria-selected={activeTab === 'stuck'}
+				onclick={() => (activeTab = 'stuck')}
+			>
+				I'm stuck
+				{#if stuckParticipants.length > 0}
+					<span class="admin-tab-badge stuck">{stuckParticipants.length}</span>
+				{/if}
 			</button>
 			<button
 				type="button"
@@ -470,6 +542,58 @@
 					</div>
 				</section>
 			{/if}
+		{:else if activeTab === 'stuck'}
+			<section class="stuck-section">
+				<p class="doubts-poll-hint">
+					Participants who tapped <strong>I'm stuck</strong> in the workshop. Blink their screen to let
+					them know help is on the way.
+				</p>
+				{#if stuckParticipants.length === 0}
+					<div class="card" style="text-align:center;color:var(--muted);padding:3rem">
+						No one is stuck right now
+					</div>
+				{:else}
+					<div class="admin-grid">
+						{#each stuckParticipants as p (p.sessionId)}
+							<article class="participant-card stuck">
+								<div class="participant-header">
+									<div>
+										<div class="participant-name stuck-blink">
+											{p.name}
+											<span class="stuck-badge">Needs help</span>
+										</div>
+										<div style="font-size:0.8rem;color:var(--muted);margin-top:0.25rem">
+											{p.currentModule} · {p.currentStep}
+										</div>
+										<div style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);margin-top:0.2rem">
+											{p.userKey.slice(0, 8)}…
+										</div>
+									</div>
+									<div style="text-align:right">
+										<time
+											style="font-size:0.75rem;color:var(--warning);display:block;margin-bottom:0.5rem"
+											datetime={p.stuckAt ?? undefined}
+										>
+											{p.stuckAt ? fmt(p.stuckAt) : ''}
+										</time>
+										<button
+											type="button"
+											class="btn-blink"
+											disabled={blinking[p.sessionId]}
+											onclick={() => blinkParticipant(p.sessionId)}
+										>
+											{blinking[p.sessionId] ? '…' : 'Blink screen'}
+										</button>
+									</div>
+								</div>
+								<div style="font-size:0.85rem;color:var(--muted)">
+									Progress: {p.progress.passed}/{p.progress.total} ({p.percent}%)
+								</div>
+							</article>
+						{/each}
+					</div>
+				{/if}
+			</section>
 		{:else}
 			<section class="doubts-section">
 				<p class="doubts-poll-hint">New questions appear automatically every 5 seconds.</p>
@@ -488,9 +612,54 @@
 											{doubt.userKey.slice(0, 8)}…
 										</div>
 									</div>
-									<time class="doubt-card-time" datetime={doubt.createdAt}>{fmt(doubt.createdAt)}</time>
+									<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end">
+										<time class="doubt-card-time" datetime={doubt.createdAt}>{fmt(doubt.createdAt)}</time>
+										{#if editingDoubtId !== doubt.id}
+											<div class="doubt-card-actions">
+												<button
+													type="button"
+													class="chat-text-btn"
+													disabled={doubtActionId === doubt.id}
+													onclick={() => startEditDoubt(doubt)}
+												>Edit</button>
+												<button
+													type="button"
+													class="chat-text-btn danger"
+													disabled={doubtActionId === doubt.id}
+													onclick={() => deleteDoubt(doubt.id)}
+												>
+													{doubtActionId === doubt.id ? '…' : 'Delete'}
+												</button>
+											</div>
+										{/if}
+									</div>
 								</div>
-								<p class="doubt-card-message">{doubt.message}</p>
+								{#if editingDoubtId === doubt.id}
+									<textarea
+										class="chat-edit-input"
+										bind:value={editingDoubtMessage}
+										maxlength="2000"
+										disabled={doubtActionId === doubt.id}
+									></textarea>
+									<div class="chat-bubble-actions" style="margin-top:0.5rem">
+										<button
+											type="button"
+											class="chat-text-btn"
+											disabled={doubtActionId === doubt.id}
+											onclick={cancelEditDoubt}
+										>Cancel</button>
+										<button
+											type="button"
+											class="chat-text-btn primary"
+											disabled={doubtActionId === doubt.id || !editingDoubtMessage.trim()}
+											onclick={() => saveEditDoubt(doubt.id)}
+										>
+											{doubtActionId === doubt.id ? 'Saving…' : 'Save'}
+										</button>
+									</div>
+								{:else}
+									<p class="doubt-card-message">{doubt.message}</p>
+								{/if}
 							</article>
 						{/each}
 					</div>

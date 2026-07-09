@@ -52,6 +52,9 @@
 	let doubtMessage = $state('');
 	let doubtLoading = $state(false);
 	let doubtError = $state('');
+	let editingDoubtId = $state<string | null>(null);
+	let editingDoubtMessage = $state('');
+	let doubtActionId = $state<string | null>(null);
 
 	const sessionId = $derived($page.params.sessionId);
 	const cursor = $derived(data?.cursorIndex ?? 0);
@@ -270,6 +273,65 @@
 	function closeChat() {
 		chatOpen = false;
 		doubtError = '';
+		cancelEditDoubt();
+	}
+
+	function startEditDoubt(doubt: Doubt) {
+		editingDoubtId = doubt.id;
+		editingDoubtMessage = doubt.message;
+		doubtError = '';
+	}
+
+	function cancelEditDoubt() {
+		editingDoubtId = null;
+		editingDoubtMessage = '';
+	}
+
+	async function saveEditDoubt(doubtId: string) {
+		const message = editingDoubtMessage.trim();
+		if (!message) return;
+
+		doubtActionId = doubtId;
+		doubtError = '';
+		try {
+			const res = await fetch(`/api/session/${sessionId}/doubts/${doubtId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ message })
+			});
+			const json = await res.json();
+			if (!res.ok) {
+				doubtError = json.message ?? json.error ?? 'Could not update your question';
+				return;
+			}
+			doubts = doubts.map((d) => (d.id === doubtId ? json.doubt : d));
+			cancelEditDoubt();
+		} catch {
+			doubtError = 'Could not update your question';
+		} finally {
+			doubtActionId = null;
+		}
+	}
+
+	async function deleteDoubt(doubtId: string) {
+		if (!confirm('Delete this question?')) return;
+
+		doubtActionId = doubtId;
+		doubtError = '';
+		try {
+			const res = await fetch(`/api/session/${sessionId}/doubts/${doubtId}`, { method: 'DELETE' });
+			if (!res.ok) {
+				const json = await res.json().catch(() => ({}));
+				doubtError = json.message ?? json.error ?? 'Could not delete your question';
+				return;
+			}
+			doubts = doubts.filter((d) => d.id !== doubtId);
+			if (editingDoubtId === doubtId) cancelEditDoubt();
+		} catch {
+			doubtError = 'Could not delete your question';
+		} finally {
+			doubtActionId = null;
+		}
 	}
 
 	async function submitDoubt() {
@@ -538,8 +600,51 @@
 			{:else}
 				{#each doubts as doubt (doubt.id)}
 					<div class="chat-bubble">
-						{doubt.message}
-						<time datetime={doubt.createdAt}>{fmtTime(doubt.createdAt)}</time>
+						{#if editingDoubtId === doubt.id}
+							<textarea
+								class="chat-edit-input"
+								bind:value={editingDoubtMessage}
+								maxlength="2000"
+								disabled={doubtActionId === doubt.id}
+							></textarea>
+							<div class="chat-bubble-actions">
+								<button
+									type="button"
+									class="chat-text-btn"
+									disabled={doubtActionId === doubt.id}
+									onclick={cancelEditDoubt}
+								>Cancel</button>
+								<button
+									type="button"
+									class="chat-text-btn primary"
+									disabled={doubtActionId === doubt.id || !editingDoubtMessage.trim()}
+									onclick={() => saveEditDoubt(doubt.id)}
+								>
+									{doubtActionId === doubt.id ? 'Saving…' : 'Save'}
+								</button>
+							</div>
+						{:else}
+							{doubt.message}
+							<div class="chat-bubble-footer">
+								<time datetime={doubt.createdAt}>{fmtTime(doubt.createdAt)}</time>
+								<div class="chat-bubble-actions">
+									<button
+										type="button"
+										class="chat-text-btn"
+										disabled={doubtActionId === doubt.id}
+										onclick={() => startEditDoubt(doubt)}
+									>Edit</button>
+									<button
+										type="button"
+										class="chat-text-btn danger"
+										disabled={doubtActionId === doubt.id}
+										onclick={() => deleteDoubt(doubt.id)}
+									>
+										{doubtActionId === doubt.id ? '…' : 'Delete'}
+									</button>
+								</div>
+							</div>
+						{/if}
 					</div>
 				{/each}
 			{/if}
