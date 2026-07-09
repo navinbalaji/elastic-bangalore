@@ -87,6 +87,22 @@ button {
 	border-color: var(--accent-dim);
 }
 
+.btn-danger {
+	background: rgba(245, 101, 101, 0.15);
+	border-color: rgba(245, 101, 101, 0.45);
+	color: var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+	background: rgba(245, 101, 101, 0.25);
+	border-color: var(--danger);
+}
+
+.btn-danger:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 .input {
 	width: 100%;
 	padding: 0.65rem 0.75rem;
@@ -937,6 +953,34 @@ th {
 .admin-tab.active .admin-tab-badge {
 	background: rgba(0, 191, 179, 0.18);
 	color: var(--accent);
+}
+
+.admin-modal-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 200;
+	background: rgba(0, 0, 0, 0.55);
+}
+
+.admin-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 210;
+	width: min(420px, calc(100vw - 2rem));
+	transform: translate(-50%, -50%);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 1.25rem;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+.admin-modal-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.5rem;
+	margin-top: 1.25rem;
 }
 
 .module-tabs {

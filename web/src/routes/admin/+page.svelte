@@ -79,6 +79,11 @@
 	let activeTab = $state<'progress' | 'questions'>('progress');
 	let activeModuleIndex = $state(0);
 	let refreshing = $state(false);
+	let resetModalOpen = $state(false);
+	let resetPassword = $state('');
+	let resetLoading = $state(false);
+	let resetError = $state('');
+	let resetSuccess = $state('');
 	let doubtsPollTimer: ReturnType<typeof setInterval> | undefined;
 	const DOUBTS_POLL_MS = 5000;
 
@@ -193,6 +198,49 @@
 		location.reload();
 	}
 
+	function openResetModal() {
+		resetPassword = '';
+		resetError = '';
+		resetSuccess = '';
+		resetModalOpen = true;
+	}
+
+	function closeResetModal() {
+		if (resetLoading) return;
+		resetModalOpen = false;
+		resetPassword = '';
+		resetError = '';
+	}
+
+	async function deleteAllEntries() {
+		resetError = '';
+		resetSuccess = '';
+		resetLoading = true;
+		try {
+			const res = await fetch('/api/admin/reset', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ password: resetPassword })
+			});
+			const json = await res.json();
+			if (!res.ok) {
+				resetError = json.error ?? 'Could not delete entries';
+				return;
+			}
+			resetSuccess = 'All workshop data deleted.';
+			participants = [];
+			doubts = [];
+			setTimeout(() => {
+				closeResetModal();
+				resetSuccess = '';
+			}, 1500);
+		} catch {
+			resetError = 'Network error';
+		} finally {
+			resetLoading = false;
+		}
+	}
+
 	onMount(() => {
 		if (data.authed) {
 			void loadParticipants();
@@ -248,10 +296,11 @@
 					{participants.length} participants · {doubts.length} questions · questions refresh every 5s
 				</p>
 			</div>
-			<div style="display:flex;gap:0.5rem;align-items:center">
+			<div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
 				<button class="btn btn-primary" type="button" disabled={refreshing} onclick={refreshProgress}>
 					{refreshing ? 'Refreshing…' : 'Refresh progress'}
 				</button>
+				<button class="btn btn-danger" type="button" onclick={openResetModal}>Delete all entries</button>
 				<button class="btn btn-secondary" onclick={logout}>Logout</button>
 			</div>
 		</div>
@@ -450,3 +499,45 @@
 		{/if}
 	{/if}
 </main>
+
+{#if resetModalOpen}
+	<div class="admin-modal-backdrop" role="presentation" onclick={closeResetModal}></div>
+	<div class="admin-modal" role="dialog" aria-labelledby="reset-title" aria-modal="true">
+		<h2 id="reset-title" style="margin:0 0 0.5rem">Delete all workshop data?</h2>
+		<p style="color:var(--muted);margin:0 0 1rem;font-size:0.9rem">
+			This permanently removes all participants, sessions, progress, and questions. Enter the admin
+			password to confirm.
+		</p>
+		<form
+			onsubmit={(e) => {
+				e.preventDefault();
+				void deleteAllEntries();
+			}}
+		>
+			<label class="label" for="reset-password">Admin password</label>
+			<input
+				id="reset-password"
+				class="input"
+				type="password"
+				bind:value={resetPassword}
+				required
+				autocomplete="current-password"
+				disabled={resetLoading}
+			/>
+			{#if resetError}
+				<div class="alert alert-error" style="margin-top:0.75rem">{resetError}</div>
+			{/if}
+			{#if resetSuccess}
+				<div class="alert alert-success" style="margin-top:0.75rem">{resetSuccess}</div>
+			{/if}
+			<div class="admin-modal-actions">
+				<button class="btn btn-secondary" type="button" disabled={resetLoading} onclick={closeResetModal}>
+					Cancel
+				</button>
+				<button class="btn btn-danger" type="submit" disabled={resetLoading || !resetPassword.trim()}>
+					{resetLoading ? 'Deleting…' : 'Delete all entries'}
+				</button>
+			</div>
+		</form>
+	</div>
+{/if}

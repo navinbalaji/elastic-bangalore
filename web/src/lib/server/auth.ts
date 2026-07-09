@@ -13,6 +13,11 @@ export function adminCookieValue(): string {
 	return hashPassword(password);
 }
 
+export function verifyAdminPassword(password: string): boolean {
+	const expected = env.ADMIN_PASSWORD ?? 'change-me';
+	return password === expected;
+}
+
 export const ADMIN_COOKIE_NAME = COOKIE;
 
 function hashPassword(password: string): string {

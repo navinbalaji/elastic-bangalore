@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { adminCookieValue, ADMIN_COOKIE_NAME } from '$lib/server/auth';
+import { adminCookieValue, ADMIN_COOKIE_NAME, verifyAdminPassword } from '$lib/server/auth';
 import { env } from '$env/dynamic/private';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	const password = String(body.password ?? '');
 	const expected = env.ADMIN_PASSWORD ?? 'change-me';
 
-	if (password !== expected) {
+	if (!verifyAdminPassword(password)) {
 		return json({ error: 'Invalid password' }, { status: 401 });
 	}
 
