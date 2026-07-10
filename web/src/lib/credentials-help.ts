@@ -1,11 +1,13 @@
 export const HELP_ELASTICSEARCH_URL = `Elasticsearch URL
 
+Works with Elastic Cloud Hosted and Serverless.
+
 1. Go to cloud.elastic.co
 2. Open your project / deployment
 3. Click Help (?) → Connection details
 4. Endpoints tab → copy "Elasticsearch endpoint"
 
-Example:
+Example (Serverless or Hosted):
 https://my-project-d9fc53.es.us-central1.gcp.elastic.cloud
 
 Kibana is derived automatically from this URL for step verification.`;

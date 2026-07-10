@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { getCredentials, hasCredentials } from '$lib/credentials-storage';
+	import HeaderGithubLink from '$lib/components/HeaderGithubLink.svelte';
 
 	type StepDownload = {
 		href: string;
@@ -390,11 +391,12 @@
 
 <div class="header">
 	<div class="logo">ELASTIC <span>BANGALORE</span></div>
-	<div style="display:flex;align-items:center;gap:1rem;font-size:0.9rem">
+	<div class="header-actions">
 		{#if data}
 			<span style="color:var(--muted)">Hi, <strong style="color:var(--text)">{data.participantName}</strong></span>
 			<span>{data.progress.passed}/{data.progress.total} ({percent}%)</span>
 		{/if}
+		<HeaderGithubLink />
 		<a
 			href="/workshop/{sessionId}/setup"
 			class="btn btn-secondary"

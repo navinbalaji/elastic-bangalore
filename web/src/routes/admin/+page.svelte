@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { MODULE_ORDER } from '$lib/steps';
+	import HeaderGithubLink from '$lib/components/HeaderGithubLink.svelte';
 
 	type ModuleStep = {
 		id: string;
@@ -371,7 +372,10 @@
 
 <div class="header">
 	<div class="logo">ELASTIC <span>BANGALORE</span> — Admin</div>
-	<a href="/" class="btn btn-secondary" style="text-decoration:none;font-size:0.875rem">Home</a>
+	<div class="header-actions">
+		<HeaderGithubLink />
+		<a href="/" class="btn btn-secondary" style="text-decoration:none;font-size:0.875rem">Home</a>
+	</div>
 </div>
 
 <main class="container" style="padding-top:2rem;max-width:1400px">

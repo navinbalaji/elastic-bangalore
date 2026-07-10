@@ -124,7 +124,8 @@ export class VerifyClient {
 	}
 
 	async validateConnection(): Promise<void> {
-		await this.es.cluster.health();
+		// cluster.health is not available on Elastic Cloud Serverless (HTTP 410).
+		await this.es.info();
 	}
 
 	async kibanaGet(path: string): Promise<{ body: string; status: number }> {

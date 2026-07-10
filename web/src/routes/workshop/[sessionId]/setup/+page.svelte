@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import { CREDENTIALS_DOCS_URL, HELP_API_KEY, HELP_ELASTICSEARCH_URL } from '$lib/credentials-help';
 	import { getCredentials, hasCredentials, saveCredentials } from '$lib/credentials-storage';
+	import HeaderGithubLink from '$lib/components/HeaderGithubLink.svelte';
 
 	let elasticsearchUrl = $state('');
 	let apiKey = $state('');
@@ -61,13 +62,16 @@
 
 <div class="header">
 	<div class="logo">ELASTIC <span>BANGALORE</span></div>
-	{#if isEditing}
-		<a
-			href="/workshop/{sessionId}"
-			class="btn btn-secondary"
-			style="text-decoration:none;font-size:0.8rem;padding:0.4rem 0.75rem"
-		>Back to workshop</a>
-	{/if}
+	<div class="header-actions">
+		<HeaderGithubLink />
+		{#if isEditing}
+			<a
+				href="/workshop/{sessionId}"
+				class="btn btn-secondary"
+				style="text-decoration:none;font-size:0.8rem;padding:0.4rem 0.75rem"
+			>Back to workshop</a>
+		{/if}
+	</div>
 </div>
 
 <main class="container" style="max-width:640px;padding-top:2rem">
@@ -86,7 +90,7 @@
 		<div class="setup-mistakes">
 			<strong style="color:var(--text)">Common mistakes</strong>
 			<ul>
-				<li>Use the <code>https://…es…</code> Elasticsearch endpoint, not the Kibana URL</li>
+				<li>Use the <code>https://…es…</code> Elasticsearch endpoint (Hosted or Serverless), not the Kibana URL</li>
 				<li>Paste the encoded API key only in the API key field</li>
 			</ul>
 		</div>

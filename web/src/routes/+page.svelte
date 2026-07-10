@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import HeaderGithubLink from '$lib/components/HeaderGithubLink.svelte';
 	import { onMount } from 'svelte';
 	import { getOrCreateUserKey } from '$lib/user-key';
 	import { hasCredentials } from '$lib/credentials-storage';
@@ -67,7 +68,10 @@
 
 <div class="header">
 	<div class="logo">ELASTIC <span>BANGALORE</span></div>
-	<a href="/admin" class="btn btn-secondary" style="text-decoration:none;font-size:0.875rem">Admin</a>
+	<div class="header-actions">
+		<HeaderGithubLink />
+		<a href="/admin" class="btn btn-secondary" style="text-decoration:none;font-size:0.875rem">Admin</a>
+	</div>
 </div>
 
 <main class="container" style="max-width:560px;padding-top:4rem">

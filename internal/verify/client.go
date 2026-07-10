@@ -45,14 +45,15 @@ func NewClients(cfg *config.Config) (*Clients, error) {
 }
 
 func (c *Clients) ValidateConnection(ctx context.Context) error {
-	res, err := esapi.ClusterHealthRequest{}.Do(ctx, c.ES)
+	// cluster.health is not available on Elastic Cloud Serverless (HTTP 410).
+	res, err := esapi.InfoRequest{}.Do(ctx, c.ES)
 	if err != nil {
-		return fmt.Errorf("elasticsearch health check failed: %w", err)
+		return fmt.Errorf("elasticsearch connection check failed: %w", err)
 	}
 	defer res.Body.Close()
 	if res.IsError() {
 		body, _ := io.ReadAll(res.Body)
-		return fmt.Errorf("elasticsearch health check error: %s", string(body))
+		return fmt.Errorf("elasticsearch connection check error: %s", string(body))
 	}
 	return nil
 }

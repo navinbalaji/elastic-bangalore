@@ -317,6 +317,41 @@ button {
 	color: var(--elastic-yellow);
 }
 
+.header-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	font-size: 0.9rem;
+}
+
+.header-github-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: 8px;
+	color: var(--muted);
+	text-decoration: none;
+	border: 1px solid var(--border);
+	background: transparent;
+	transition:
+		color 0.15s ease,
+		border-color 0.15s ease,
+		background 0.15s ease;
+}
+
+.header-github-link:hover {
+	color: var(--text);
+	border-color: var(--accent-dim);
+	background: rgba(255, 255, 255, 0.04);
+}
+
+.header-github-link svg {
+	width: 1.125rem;
+	height: 1.125rem;
+}
+
 .grid-2 {
 	display: grid;
 	grid-template-columns: 320px 1fr;
