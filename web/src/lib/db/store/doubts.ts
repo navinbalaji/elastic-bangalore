@@ -1,6 +1,7 @@
 import { getEsClient } from '../app-client';
 import { INDICES } from '../indices';
 import type { Doubt, DoubtDoc } from '../types';
+import * as chat from './chat';
 import { nowIso } from './utils';
 
 function docToDoubt(id: string, doc: Partial<DoubtDoc> & Pick<DoubtDoc, 'sessionId' | 'message' | 'createdAt'>): Doubt {
@@ -119,7 +120,9 @@ export async function create(sessionId: string, message: string): Promise<Doubt>
 		refresh: 'wait_for'
 	});
 
-	return docToDoubt(id, doc);
+	const doubt = docToDoubt(id, doc);
+	await chat.upsertFromDoubt(doubt);
+	return doubt;
 }
 
 export async function update(id: string, message: string): Promise<Doubt> {
@@ -133,6 +136,7 @@ export async function update(id: string, message: string): Promise<Doubt> {
 
 	const doubt = await findById(id);
 	if (!doubt) throw new Error('Doubt not found after update');
+	await chat.upsertFromDoubt(doubt);
 	return doubt;
 }
 
@@ -149,6 +153,7 @@ export async function setReply(id: string, reply: string): Promise<Doubt> {
 
 	const doubt = await findById(id);
 	if (!doubt) throw new Error('Doubt not found after reply');
+	await chat.upsertFromDoubt(doubt);
 	return doubt;
 }
 
@@ -160,6 +165,7 @@ export async function remove(id: string): Promise<boolean> {
 			id,
 			refresh: 'wait_for'
 		});
+		await chat.removeByDoubtId(id);
 		return true;
 	} catch (e: unknown) {
 		if (isNotFound(e)) return false;

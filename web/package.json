@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "db:bootstrap": "tsx --env-file=.env scripts/bootstrap-es.ts",
+    "setup:chat": "tsx --env-file=.env scripts/setup-chat.ts",
     "verify:lab-guide": "tsx scripts/verify-lab-guide.ts",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },

@@ -3,8 +3,27 @@ export const INDICES = {
 	sessions: 'workshop-sessions',
 	doubts: 'workshop-doubts',
 	stuckEvents: 'workshop-stuck-events',
-	moduleProgress: 'workshop-module-progress'
+	moduleProgress: 'workshop-module-progress',
+	chat: 'chat'
 } as const;
+
+const JINA_EMBEDDINGS_V5_SMALL = '.jina-embeddings-v5-text-small';
+
+const jinaSemanticTextField = {
+	type: 'semantic_text' as const,
+	inference_id: JINA_EMBEDDINGS_V5_SMALL,
+	model_settings: {
+		task_type: 'text_embedding' as const,
+		dimensions: 1024,
+		similarity: 'cosine' as const,
+		element_type: 'float' as const
+	},
+	index_options: {
+		dense_vector: {
+			type: 'flat' as const
+		}
+	}
+};
 
 export const INDEX_MAPPINGS = {
 	[INDICES.participants]: {
@@ -88,6 +107,22 @@ export const INDEX_MAPPINGS = {
 					}
 				},
 				updatedAt: { type: 'date' }
+			}
+		}
+	},
+	[INDICES.chat]: {
+		mappings: {
+			properties: {
+				doubtId: { type: 'keyword' },
+				question: {
+					type: 'text',
+					copy_to: ['question_semantic']
+				},
+				question_semantic: jinaSemanticTextField,
+				answer: { type: 'text' },
+				sessionId: { type: 'keyword' },
+				createdAt: { type: 'date' },
+				repliedAt: { type: 'date' }
 			}
 		}
 	}

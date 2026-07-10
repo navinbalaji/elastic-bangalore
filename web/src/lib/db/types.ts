@@ -37,6 +37,15 @@ export type DoubtDoc = {
 	createdAt: string;
 };
 
+export type ChatDoc = {
+	doubtId: string;
+	question: string;
+	answer?: string;
+	sessionId: string;
+	createdAt: string;
+	repliedAt?: string;
+};
+
 export type StuckEventDoc = {
 	sessionId: string;
 	participantId: string;
@@ -78,5 +87,6 @@ export type ModuleProgressDoc = {
 export type Participant = ParticipantDoc & { id: string };
 export type Session = SessionDoc & { id: string };
 export type Doubt = DoubtDoc & { id: string };
+export type ChatRecord = ChatDoc & { id: string };
 export type StuckEvent = StuckEventDoc & { id: string };
 export type ModuleProgressRecord = ModuleProgressDoc & { id: string };
