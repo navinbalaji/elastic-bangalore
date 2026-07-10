@@ -15,8 +15,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 
 	const config: WorkshopConfig = {
 		elasticsearchUrl: String(body.elasticsearchUrl ?? '').trim() || undefined,
-		apiKey,
-		kibanaUrl: String(body.kibanaUrl ?? '').trim()
+		apiKey
 	};
 
 	const err = validateConfig(config);

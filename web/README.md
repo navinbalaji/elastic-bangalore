@@ -90,7 +90,7 @@ netlify deploy --prod
 
 **In the browser only (local storage):**
 
-- Elastic Cloud credentials (Elasticsearch URL, API key, Kibana URL)
+- Elastic Cloud credentials (Elasticsearch URL and API key)
 
 ## Security notes
 

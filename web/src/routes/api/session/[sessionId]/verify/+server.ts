@@ -24,18 +24,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		return json({ error: 'This step is not auto-verified' }, { status: 400 });
 	}
 
-	if (
-		!credentials?.apiKey?.trim() ||
-		!credentials.kibanaUrl?.trim() ||
-		!credentials.elasticsearchUrl?.trim()
-	) {
+	if (!credentials?.apiKey?.trim() || !credentials.elasticsearchUrl?.trim()) {
 		return json({ error: 'Configure Elastic credentials first' }, { status: 400 });
 	}
 
 	const config: WorkshopConfig = {
 		elasticsearchUrl: credentials.elasticsearchUrl.trim(),
-		apiKey: credentials.apiKey.trim(),
-		kibanaUrl: credentials.kibanaUrl.trim()
+		apiKey: credentials.apiKey.trim()
 	};
 
 	const configErr = validateConfig(config);

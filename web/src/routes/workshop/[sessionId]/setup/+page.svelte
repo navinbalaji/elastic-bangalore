@@ -2,17 +2,11 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import {
-		CREDENTIALS_DOCS_URL,
-		HELP_API_KEY,
-		HELP_ELASTICSEARCH_URL,
-		HELP_KIBANA_URL
-	} from '$lib/credentials-help';
+	import { CREDENTIALS_DOCS_URL, HELP_API_KEY, HELP_ELASTICSEARCH_URL } from '$lib/credentials-help';
 	import { getCredentials, hasCredentials, saveCredentials } from '$lib/credentials-storage';
 
 	let elasticsearchUrl = $state('');
 	let apiKey = $state('');
-	let kibanaUrl = $state('');
 	let hasSavedApiKey = $state(false);
 	let isEditing = $state(false);
 	let loading = $state(false);
@@ -25,7 +19,6 @@
 		isEditing = hasCredentials(sessionId);
 		if (!saved) return;
 		elasticsearchUrl = saved.elasticsearchUrl;
-		kibanaUrl = saved.kibanaUrl;
 		hasSavedApiKey = Boolean(saved.apiKey);
 	});
 
@@ -42,8 +35,7 @@
 
 			const creds = {
 				elasticsearchUrl: elasticsearchUrl.trim(),
-				apiKey: finalApiKey,
-				kibanaUrl: kibanaUrl.trim()
+				apiKey: finalApiKey
 			};
 
 			const res = await fetch(`/api/session/${sessionId}/credentials`, {
@@ -94,8 +86,8 @@
 		<div class="setup-mistakes">
 			<strong style="color:var(--text)">Common mistakes</strong>
 			<ul>
-				<li>Do not put the API key in the Kibana URL field</li>
-				<li>Do not put an <code>https://…es…</code> URL in the API key field</li>
+				<li>Use the <code>https://…es…</code> Elasticsearch endpoint, not the Kibana URL</li>
+				<li>Paste the encoded API key only in the API key field</li>
 			</ul>
 		</div>
 
@@ -137,21 +129,6 @@ Leave blank to keep your saved key, or paste a new encoded key to replace it.{/i
 					bind:value={apiKey}
 					placeholder={hasSavedApiKey ? 'Saved — enter again to change' : 'Base64-encoded API key'}
 					required={!hasSavedApiKey}
-				/>
-			</div>
-
-			<div style="margin-bottom:1rem">
-				<label class="label" for="kibanaUrl">Kibana URL</label>
-				<details class="field-help">
-					<summary>Where to find this</summary>
-					<div class="field-help-body">{HELP_KIBANA_URL}</div>
-				</details>
-				<input
-					id="kibanaUrl"
-					class="input"
-					bind:value={kibanaUrl}
-					placeholder="https://….kb….elastic-cloud.com"
-					required
 				/>
 			</div>
 

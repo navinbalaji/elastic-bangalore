@@ -121,18 +121,6 @@ export function sectionForStep(stepId: string, doc: string): string | null {
 }
 
 export async function loadLabGuide(): Promise<string> {
-	const { readFile } = await import('node:fs/promises');
-	const { join } = await import('node:path');
-	const paths = [
-		join(process.cwd(), 'static', 'lab-guide.md'),
-		join(process.cwd(), '..', 'lab-guide.md')
-	];
-	for (const p of paths) {
-		try {
-			return await readFile(p, 'utf-8');
-		} catch {
-			// try next
-		}
-	}
-	throw new Error('lab-guide.md not found');
+	const { LAB_GUIDE_DOCUMENT } = await import('./lab-guide-content');
+	return LAB_GUIDE_DOCUMENT;
 }

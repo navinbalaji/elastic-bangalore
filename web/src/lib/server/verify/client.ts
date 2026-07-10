@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
 import type { WorkshopConfig } from '$lib/types';
+import { deriveKibanaUrl } from '$lib/kibana-url';
 
 export type VerifyResult = { pass: boolean; reason: string };
 
@@ -105,10 +106,12 @@ function topHitContent(result: Record<string, unknown>): string {
 export class VerifyClient {
 	private es: Client;
 	private config: WorkshopConfig;
+	private kibanaUrl: string | null;
 	private httpTimeout = 60_000;
 
 	constructor(config: WorkshopConfig) {
 		this.config = config;
+		this.kibanaUrl = deriveKibanaUrl(config.elasticsearchUrl);
 		const esConfig: ConstructorParameters<typeof Client>[0] = {
 			auth: { apiKey: config.apiKey }
 		};
@@ -125,10 +128,13 @@ export class VerifyClient {
 	}
 
 	async kibanaGet(path: string): Promise<{ body: string; status: number }> {
+		if (!this.kibanaUrl) {
+			throw new Error('Kibana URL could not be derived from Elasticsearch URL');
+		}
 		const controller = new AbortController();
 		const timer = setTimeout(() => controller.abort(), this.httpTimeout);
 		try {
-			const res = await fetch(`${this.config.kibanaUrl}${path}`, {
+			const res = await fetch(`${this.kibanaUrl}${path}`, {
 				headers: {
 					Authorization: `ApiKey ${this.config.apiKey}`,
 					'kbn-xsrf': 'true',
@@ -480,12 +486,11 @@ export class VerifyClient {
 
 export function validateConfig(cfg: WorkshopConfig): string | null {
 	if (!cfg.apiKey?.trim()) return 'API key is required';
-	if (!cfg.kibanaUrl?.trim()) return 'Kibana URL is required';
 	if (!cfg.elasticsearchUrl?.trim()) {
 		return 'Elasticsearch URL is required';
 	}
-	if (!cfg.kibanaUrl.includes('.kb.') && !cfg.kibanaUrl.toLowerCase().includes('kibana')) {
-		return 'Kibana URL should look like https://....kb....elastic-cloud.com';
+	if (!deriveKibanaUrl(cfg.elasticsearchUrl)) {
+		return 'Use an Elastic Cloud Elasticsearch URL (…es….elastic.cloud) so Kibana can be derived automatically';
 	}
 	return null;
 }

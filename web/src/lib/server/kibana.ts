@@ -1,16 +1,10 @@
-export function deriveKibanaUrl(elasticsearchUrl?: string): string | null {
-	const url = elasticsearchUrl ?? process.env.ELASTICSEARCH_URL;
-	if (!url) return null;
-	if (url.includes('.kb.')) return url.replace(/\/$/, '');
-	if (url.includes('.es.')) return url.replace('.es.', '.kb.').replace(/\/$/, '');
-	return null;
-}
+import { deriveKibanaUrl } from '$lib/kibana-url';
 
 export function getKibanaConfig(): { url: string; apiKey: string } {
-	const url = process.env.KIBANA_URL ?? deriveKibanaUrl();
+	const url = deriveKibanaUrl(process.env.ELASTICSEARCH_URL);
 	const apiKey = process.env.ELASTICSEARCH_API_KEY;
 	if (!url) {
-		throw new Error('KIBANA_URL or ELASTICSEARCH_URL with .es. host is required');
+		throw new Error('ELASTICSEARCH_URL with .es. host is required to reach Kibana');
 	}
 	if (!apiKey) {
 		throw new Error('ELASTICSEARCH_API_KEY is required');

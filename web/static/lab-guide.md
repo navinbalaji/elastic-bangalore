@@ -998,7 +998,7 @@ What is Quidditch, and which Hogwarts House does Hagrid warn Harry against, link
 
 3. Expand the **Thinking** block to see which tool the agent chose to call.
 
-   ![](images/image-48.png)
+   ![](images/image48.png)
    ![Agent reasoning block](images/image-47.png)
 
 4. Have the agent send an email summary:

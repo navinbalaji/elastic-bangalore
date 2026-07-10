@@ -26,5 +26,4 @@ export type WorkshopConfig = {
 	cloudId?: string;
 	elasticsearchUrl?: string;
 	apiKey: string;
-	kibanaUrl: string;
 };
