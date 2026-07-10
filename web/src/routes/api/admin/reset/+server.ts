@@ -1,7 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { sql } from 'drizzle-orm';
-import { db } from '$lib/db';
+import { deleteAll } from '$lib/db';
 import { isAdminAuthed, verifyAdminPassword } from '$lib/server/auth';
 
 export const POST: RequestHandler = async ({ cookies, request }) => {
@@ -13,9 +12,7 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 		return json({ error: 'Invalid password' }, { status: 401 });
 	}
 
-	await db.execute(
-		sql`TRUNCATE TABLE doubts, sessions, participants RESTART IDENTITY CASCADE`
-	);
+	await deleteAll();
 
 	return json({ ok: true });
 };

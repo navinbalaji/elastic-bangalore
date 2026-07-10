@@ -42,12 +42,12 @@
 	let pollTimer: ReturnType<typeof setInterval> | undefined;
 	let stepListEl = $state<HTMLUListElement | null>(null);
 	let copyFeedback = $state('');
-	let stuckRevokeTimer: ReturnType<typeof setTimeout> | undefined;
-	const STUCK_REVOKE_MS = 5000;
 
-	type Doubt = { id: string; message: string; createdAt: string };
+	type Doubt = { id: string; message: string; reply: string | null; repliedAt: string | null; createdAt: string };
 
 	let chatOpen = $state(false);
+	let doubtsPollTimer: ReturnType<typeof setInterval> | undefined;
+	const DOUBTS_POLL_MS = 5000;
 	let doubts = $state<Doubt[]>([]);
 	let doubtMessage = $state('');
 	let doubtLoading = $state(false);
@@ -88,18 +88,15 @@
 	}
 
 	async function pollSession() {
-		const res = await fetch(`/api/session/${sessionId}`);
+		const res = await fetch(`/api/session/${sessionId}?poll=1`);
 		if (!res.ok) return;
 		const json = await res.json();
 		if (json.blinkAt && json.blinkAt !== lastBlinkAt) {
 			lastBlinkAt = json.blinkAt;
-			clearStuckRevokeTimer();
 			triggerBlink();
 		}
 		if (data) {
-			const wasStuck = data.stuckAt;
 			data = { ...data, stuckAt: json.stuckAt, blinkAt: json.blinkAt };
-			if (wasStuck && !json.stuckAt) clearStuckRevokeTimer();
 		}
 	}
 
@@ -110,40 +107,8 @@
 		}, 2000);
 	}
 
-	function clearStuckRevokeTimer() {
-		if (stuckRevokeTimer) {
-			clearTimeout(stuckRevokeTimer);
-			stuckRevokeTimer = undefined;
-		}
-	}
-
-	async function revokeStuck() {
-		clearStuckRevokeTimer();
-		if (!data?.stuckAt) return;
-		try {
-			const res = await fetch(`/api/session/${sessionId}/stuck`, { method: 'DELETE' });
-			if (res.ok && data) {
-				data = { ...data, stuckAt: null };
-			}
-		} catch {
-			// ignore
-		}
-	}
-
-	function scheduleStuckRevoke() {
-		clearStuckRevokeTimer();
-		stuckRevokeTimer = setTimeout(() => {
-			void revokeStuck();
-		}, STUCK_REVOKE_MS);
-	}
-
 	async function signalStuck() {
-		if (!data) return;
-
-		if (data.stuckAt) {
-			await revokeStuck();
-			return;
-		}
+		if (!data || data.stuckAt) return;
 
 		stuckLoading = true;
 		try {
@@ -151,21 +116,41 @@
 			if (!res.ok) return;
 			const json = await res.json();
 			data = { ...data, stuckAt: json.stuckAt };
-			scheduleStuckRevoke();
 		} finally {
 			stuckLoading = false;
 		}
 	}
 
+	let cursorAbort: AbortController | undefined;
+
 	async function selectStep(index: number) {
-		if (!data || index < 0 || index >= data.states.length) return;
-		await fetch(`/api/session/${sessionId}`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ cursorIndex: index })
-		});
+		if (!data || index < 0 || index >= data.states.length || index === data.cursorIndex) return;
+		const prevIndex = data.cursorIndex;
 		data = { ...data, cursorIndex: index };
-		await refreshGuide();
+
+		cursorAbort?.abort();
+		cursorAbort = new AbortController();
+		const { signal } = cursorAbort;
+
+		try {
+			const res = await fetch(`/api/session/${sessionId}`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ cursorIndex: index }),
+				signal
+			});
+			if (signal.aborted) return;
+			if (!res.ok) {
+				data = { ...data, cursorIndex: prevIndex };
+				return;
+			}
+			const json = await res.json();
+			if (signal.aborted) return;
+			data = { ...data, cursorIndex: index, guideHtml: json.guideHtml ?? data.guideHtml };
+		} catch (e) {
+			if (e instanceof DOMException && e.name === 'AbortError') return;
+			data = { ...data, cursorIndex: prevIndex };
+		}
 		await scrollActiveIntoView();
 	}
 
@@ -192,14 +177,6 @@
 		} else if (e.key === 'ArrowDown') {
 			e.preventDefault();
 			goNext();
-		}
-	}
-
-	async function refreshGuide() {
-		const res = await fetch(`/api/session/${sessionId}`);
-		if (res.ok) {
-			const json = await res.json();
-			data = json;
 		}
 	}
 
@@ -268,12 +245,20 @@
 	async function openChat() {
 		chatOpen = true;
 		await loadDoubts();
+		if (doubtsPollTimer) clearInterval(doubtsPollTimer);
+		doubtsPollTimer = setInterval(() => {
+			void loadDoubts();
+		}, DOUBTS_POLL_MS);
 	}
 
 	function closeChat() {
 		chatOpen = false;
 		doubtError = '';
 		cancelEditDoubt();
+		if (doubtsPollTimer) {
+			clearInterval(doubtsPollTimer);
+			doubtsPollTimer = undefined;
+		}
 	}
 
 	function startEditDoubt(doubt: Doubt) {
@@ -395,7 +380,8 @@
 		pollTimer = setInterval(pollSession, 4000);
 		return () => {
 			if (pollTimer) clearInterval(pollTimer);
-			clearStuckRevokeTimer();
+			if (doubtsPollTimer) clearInterval(doubtsPollTimer);
+			cursorAbort?.abort();
 		};
 	});
 </script>
@@ -568,12 +554,12 @@
 		type="button"
 		class="stuck-fab"
 		class:waiting={!!data.stuckAt}
-		disabled={stuckLoading}
+		disabled={stuckLoading || !!data.stuckAt}
 		onclick={signalStuck}
-		title={data.stuckAt ? 'Click to cancel · auto-cancels in 5s' : 'Signal that you need help'}
+		title={data.stuckAt ? 'Waiting for facilitator — they will dismiss from the admin panel' : 'Signal that you need help'}
 	>
 		{#if data.stuckAt}
-			Waiting for help… (tap to cancel)
+			Waiting for help…
 		{:else}
 			{stuckLoading ? 'Sending…' : "I'm stuck"}
 		{/if}
@@ -625,6 +611,17 @@
 							</div>
 						{:else}
 							{doubt.message}
+							{#if doubt.reply}
+								<div class="chat-reply">
+									<div class="chat-reply-label">Facilitator</div>
+									{doubt.reply}
+									{#if doubt.repliedAt}
+										<time class="chat-reply-time" datetime={doubt.repliedAt}>
+											{fmtTime(doubt.repliedAt)}
+										</time>
+									{/if}
+								</div>
+							{/if}
 							<div class="chat-bubble-footer">
 								<time datetime={doubt.createdAt}>{fmtTime(doubt.createdAt)}</time>
 								<div class="chat-bubble-actions">

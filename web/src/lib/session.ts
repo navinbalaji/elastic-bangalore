@@ -1,4 +1,4 @@
-import type { StepStateJson } from '$lib/db/schema';
+import type { StepStateJson } from '$lib/db/types';
 import type { StepState } from '$lib/types';
 import { ALL_STEPS } from '$lib/steps';
 

@@ -1,18 +1,12 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/db';
-import { sessions } from '$lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { sessions } from '$lib/db';
 import { VerifyClient, validateConfig } from '$lib/server/verify/client';
 import type { WorkshopConfig } from '$lib/types';
 
 /** Validate Elastic credentials without persisting them (stored in browser localStorage). */
 export const PUT: RequestHandler = async ({ params, request }) => {
-	const [existing] = await db
-		.select({ id: sessions.id })
-		.from(sessions)
-		.where(eq(sessions.id, params.sessionId))
-		.limit(1);
+	const existing = await sessions.findById(params.sessionId);
 	if (!existing) error(404, 'Session not found');
 
 	const body = await request.json();

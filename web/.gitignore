@@ -7,5 +7,4 @@ node_modules
 .env
 .env.*
 !.env.example
-drizzle/meta
 supabase/

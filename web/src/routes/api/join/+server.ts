@@ -1,8 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/db';
-import { participants, sessions } from '$lib/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { participants, sessions } from '$lib/db';
+import { updateParticipantName, touchParticipant } from '$lib/db/store/helpers';
 import { initialStates } from '$lib/steps';
 import { statesToJson } from '$lib/session';
 import { setSessionCookie } from '$lib/server/session-cookie';
@@ -19,32 +18,18 @@ async function resumeParticipant(
 	name: string,
 	cookies: Parameters<RequestHandler>[0]['cookies']
 ) {
-	const [existing] = await db
-		.select({ id: participants.id, name: participants.name })
-		.from(participants)
-		.where(eq(participants.userKey, userKey))
-		.limit(1);
-
+	const existing = await participants.findByUserKey(userKey);
 	if (!existing) return null;
 
-	if (existing.name !== name) {
-		await db
-			.update(participants)
-			.set({ name, lastSeenAt: new Date() })
-			.where(eq(participants.id, existing.id));
-	} else {
-		await db
-			.update(participants)
-			.set({ lastSeenAt: new Date() })
-			.where(eq(participants.id, existing.id));
-	}
+	const session = await sessions.findLatestByParticipantId(existing.id);
 
-	const [session] = await db
-		.select({ id: sessions.id })
-		.from(sessions)
-		.where(eq(sessions.participantId, existing.id))
-		.orderBy(desc(sessions.updatedAt))
-		.limit(1);
+	if (existing.name !== name) {
+		await updateParticipantName(existing.id, name);
+	} else if (session) {
+		await touchParticipant(existing.id, session.id);
+	} else {
+		await touchParticipant(existing.id);
+	}
 
 	if (session) {
 		setSessionCookie(cookies, session.id);
@@ -57,14 +42,7 @@ async function resumeParticipant(
 		};
 	}
 
-	const [newSession] = await db
-		.insert(sessions)
-		.values({
-			participantId: existing.id,
-			stepStates: statesToJson(initialStates())
-		})
-		.returning({ id: sessions.id });
-
+	const newSession = await sessions.create(existing, statesToJson(initialStates()));
 	setSessionCookie(cookies, newSession.id);
 
 	return {
@@ -96,18 +74,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		return json(resumed);
 	}
 
-	const [participant] = await db
-		.insert(participants)
-		.values({ userKey, name })
-		.returning({ id: participants.id, name: participants.name });
-
-	const [session] = await db
-		.insert(sessions)
-		.values({
-			participantId: participant.id,
-			stepStates: statesToJson(initialStates())
-		})
-		.returning({ id: sessions.id });
+	const participant = await participants.create(userKey, name);
+	const session = await sessions.create(participant, statesToJson(initialStates()));
 
 	setSessionCookie(cookies, session.id);
 

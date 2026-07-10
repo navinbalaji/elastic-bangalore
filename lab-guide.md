@@ -46,11 +46,11 @@ Before starting this workshop, please ensure you have:
 
 1. Open the **Kibana → Click on Settings Icon from the bottom left hand Corner → Under Model Management → Elastic Inference** tab.
 2. Under **Model Family**, select **Jina**.
-   ![Jina model family selector](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image.png)
+   ![Jina model family selector](images/image.png)
 
 3. Click **Model Class → Embedding** to view available options.
 
-   ![Jina embedding model options](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-1.png)
+   ![Jina embedding model options](images/image-1.png)
 
 4. The Jina embedding model endpoints (Elastic Inference Service — EIS) are preconfigured and run on GPUs.
 
@@ -93,11 +93,11 @@ Semantic reranking reorders initially retrieved documents based on their semanti
 1. Open the **Kibana → Click on Settings Icon from the bottom left hand Corner → Under Model Management → Elastic Inference** tab.
 2. Under **Model Family**, select **Jina**.
 
-   ![Jina model family selector](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-2.png)
+   ![Jina model family selector](images/image-2.png)
 
 3. Click **Model Class → Rerank** to view available options.
 
-   ![Jina reranker model options](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-3.png)
+   ![Jina reranker model options](images/image-3.png)
 
 4. A semantic reranker endpoint (`.jina-reranker-v3`) has been preconfigured. To demonstrate the Jina.ai semantic reranker model, let's first create an index with sample documents about U.S. capitals and related information. This example includes various documents with the word "capital" to show how semantic reranking can distinguish between different meanings.
 
@@ -278,16 +278,16 @@ POST rerank-demo/_search
 2. In Kibana, go to **Search → Integrations** from the top nav.
 3. Search for **"Upload"** and click **"Upload a File"**.
 
-   ![Kibana file upload screen](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-4.png)
+   ![Kibana file upload screen](images/image-4.png)
 
 4. Set the index name to `harrypotter`.
 5. Upload the Harry Potter PDF. **Do NOT click Import yet** — you need to configure semantic text fields first.
 
-   ![File upload configuration](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-5.png)
+   ![File upload configuration](images/image-5.png)
 
 6. Click **Advanced Options**.
 
-   ![Advanced options button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-6.png)
+   ![Advanced options button](images/image-6.png)
 
 7. Under **Add Smarter search fields to the mappings**, click **Semantic Text Fields**.
 
@@ -295,7 +295,7 @@ POST rerank-demo/_search
 
 8. Add the field `content_jina` and select the `.jina-embeddings-v5-text-small` model.
 
-   ![Semantic text field configuration](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-7.png)
+   ![Semantic text field configuration](images/image-7.png)
 
 9. Click **Import**.
 
@@ -303,7 +303,7 @@ POST rerank-demo/_search
 
 10. Once complete, you'll see a success message:
 
-    ![Import success message](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-8.png)
+    ![Import success message](images/image-8.png)
 
 ---
 
@@ -322,7 +322,7 @@ POST rerank-demo/_search
 Let's test Jina's multilingual embedding model using property dataset and ES|QL syntax. You'll also use a built-in language detection model.
 
 
-![Multi-language search overview](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-9.png)
+![Multi-language search overview](images/image-9.png)
 
 > **Supported languages:** Visit [Jina's multilingual embedding model page](https://jina.ai/models/jina-embeddings-v5-text-small) and check the **# languages** section.
 
@@ -332,13 +332,13 @@ Let's start from here:
 2. In Kibana, go to **Search → Integrations** from the top nav.
 3. Search for **"Upload"** and click **"Upload a File"**.
 
-   ![Kibana file upload screen](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-4.png)
+   ![Kibana file upload screen](images/image-4.png)
 
 4. Set the index name to `properties`.
 5. Upload the properties-dataset.csv. **Do NOT click Import yet** — you need to configure geo-point fields and update mappings.
 6. Click **Advanced Options**.
 
-   ![Advanced options button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-52.png)
+   ![Advanced options button](images/image-52.png)
 
 7. Update (copy-paste) the below mappings:
 ```json
@@ -383,7 +383,7 @@ Let's start from here:
 ```
 8. **[Optional]** Under **Add Geo Point fields to the mappings**, click **longitude** and choose **longitude** field, do the same for latitude.
 
-![geo-point-addition](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-53.png)
+![geo-point-addition](images/image-53.png)
 
 9. Before Importing, check whether you added the **NEW MAPPINGS** and **GEO POINT FIELD**, and then Click **Import**.
 
@@ -391,7 +391,7 @@ Let's start from here:
 
 10. Once complete, you'll see a success message:
 
-    ![Import success message](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-54.png)
+    ![Import success message](images/image-54.png)
 
 ---
 
@@ -399,7 +399,7 @@ Let's start from here:
 
 1. In **Kibana → Discover**, click **`</> Query in ES|QL`** (top right).
 
-   ![ES|QL query toggle](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-10.png)
+   ![ES|QL query toggle](images/image-10.png)
 
 2. **Test English query:**
 
@@ -418,7 +418,7 @@ FROM properties METADATA _score
 
 > 💡 Tip: Drag the bar below the ES|QL text area to make it larger.
 
-![Expected English search results](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image12.gif)
+![Expected English search results](images/image12.gif)
 
 **Query DSL equivalent:**
 
@@ -506,11 +506,11 @@ Pipe your search results directly into an LLM to generate a natural language res
 1. Open the **Kibana → Click on Settings Icon from the bottom left hand Corner → Under Model Management → Elastic Inference** tab.
 2. Under **Model Family**, select **Anthropic**; for Model Type, select **LLM**.
 
-   ![Anthropic LLM endpoint](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-11.png)
+   ![Anthropic LLM endpoint](images/image-11.png)
 
 3. Click on **Anthropic Claude Opus 4.6** (or **Anthropic Claude Opus 4.7**) and copy the inference ID: `.anthropic-claude-4.6-opus-completion`.
 
-   ![Copy inference ID](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-12.png)
+   ![Copy inference ID](images/image-12.png)
 
 4. Back in **Kibana → Discover**, run:
 
@@ -549,11 +549,11 @@ Elasticsearch includes a pre-trained language detection model useful for routing
 
 1. Open the **Trained Models** tab under **Machine Learning**.
 
-  ![trained-models-tab](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-13.png)
+  ![trained-models-tab](images/image-13.png)
 
 2. For `lang_ident_model_1`, click **Test**.
 
-   ![Language model test button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-14.png)
+   ![Language model test button](images/image-14.png)
 
 3. Enter the German text and click **Test**:
 
@@ -561,11 +561,11 @@ Elasticsearch includes a pre-trained language detection model useful for routing
 Haus mit direktem Strandzugang und Naturwanderwegen
 ```
 
-   ![German input example](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-15.png)
+   ![German input example](images/image-15.png)
 
 4. The model correctly identifies **DE** (German).
 
-   ![German detection result](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-16.png)
+   ![German detection result](images/image-16.png)
 
 5. Clear the input and test Hindi:
 
@@ -593,7 +593,7 @@ The model identifies **HI** (Hindi).
 
 Build a workflow that sends an email to a recipient. It detects whether an email address or just a name was provided — if a name, it looks up the email address in an index first.
 
-![Workflow overview](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-17.png)
+![Workflow overview](images/image-17.png)
 
 ---
 
@@ -621,7 +621,7 @@ PUT user_emails
 }
 ```
 
-   ![Index creation confirmation](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-18.png)
+   ![Index creation confirmation](images/image-18.png)
 
 3. Add your name and email. Replace the placeholders:
 
@@ -633,7 +633,7 @@ POST user_emails/_doc
 }
 ```
 
-   ![Example document](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-19.png)
+   ![Example document](images/image-19.png)
 
 ---
 
@@ -641,11 +641,11 @@ POST user_emails/_doc
 
 1. Open **Kibana → Workflows**.
 
-![kibana-workflows](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-20.png)
+![kibana-workflows](images/image-20.png)
 
 2. Click **Create a new workflow**.
 
-   ![Create workflow button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-21.png)
+   ![Create workflow button](images/image-21.png)
 
 3. Clear any default content, paste the YAML below, and click **Save**:
 
@@ -719,7 +719,7 @@ steps:
           continue: false
 ```
 
-   ![Workflow YAML in editor](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-22.png)
+   ![Workflow YAML in editor](images/image-22.png)
 
 ---
 
@@ -727,7 +727,7 @@ steps:
 
 1. Click the **Play** button to test.
 
-   ![Workflow play button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-23.png)
+   ![Workflow play button](images/image-23.png)
 
 2. Test with a name (triggers email lookup):
 
@@ -738,11 +738,11 @@ steps:
   "body": "This worked!"
 }
 ```
-   ![Name-based test input](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-24.png)
+   ![Name-based test input](images/image-24.png)
 
 3. Expand the output — verify the email address was resolved from the index.
 
- ![Email-based test input](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-25.png)
+ ![Email-based test input](images/image-25.png)
 
 4. Test again with a direct email address:
 
@@ -788,25 +788,25 @@ Agent Builder lets you create AI agents that:
 
 1. Open **Kibana → Agent Builder**.
 
-![open-agent-builder](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-26.png)
+![open-agent-builder](images/image-26.png)
 
 2. Click **Tools** in the left pane under **Elastic AI Agent**.
 
-   ![Agent Builder tools pane](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-27.png)
+   ![Agent Builder tools pane](images/image-27.png)
 
 3. Click **Manage all tools → New Tool** (top right).
 
-   ![New tool button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-28.png)
+   ![New tool button](images/image-28.png)
 
 4. Configure the tool:
    - **Type:** Workflow
    - **Workflow:** `send-email-with-lookup`
 
-   ![Workflow tool configuration](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-29.png)
+   ![Workflow tool configuration](images/image-29.png)
 
    > **Note:** If Workflows is not an option in the dropdown, run the following in Dev Tools and then click Refresh:
    >
-   > ![Enable workflows setting](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-30.png)
+   > ![Enable workflows setting](images/image-30.png)
    >
    > ```
    > POST kbn://internal/kibana/settings
@@ -823,11 +823,11 @@ Agent Builder lets you create AI agents that:
 potter.send.email
 ```
    
-   ![Tool ID field](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-31.png)
+   ![Tool ID field](images/image-31.png)
 
 6. Add a description:
 
-![Tool description field](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-32.png)
+![Tool description field](images/image-32.png)
 
 ```
 Sends an email to a recipient by name or email address. If a name is provided, the tool automatically resolves the email address before sending.
@@ -835,7 +835,7 @@ Sends an email to a recipient by name or email address. If a name is provided, t
 
 7. Click **Save & test**.
 
-   ![Save and test button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-33.png)
+   ![Save and test button](images/image-33.png)
 
 8. Test the tool:
    - **recipient:** your name or email from earlier
@@ -843,13 +843,13 @@ Sends an email to a recipient by name or email address. If a name is provided, t
    - **body:** `this worked!`
    - Click **Submit**
 
-   ![Tool test inputs](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-34.png)
+   ![Tool test inputs](images/image-34.png)
 
 9. Verify the output in the right pane.
 
 10. Exit the window.
 
-    ![Exit button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-35.png)
+    ![Exit button](images/image-35.png)
 
 ---
 
@@ -857,12 +857,12 @@ Sends an email to a recipient by name or email address. If a name is provided, t
 
 1. Click **New Tool** (top right).
 
-   ![New tool button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-36.png)
+   ![New tool button](images/image-36.png)
 
 2. Configure the tool:
    - **Type:** Index Search
 
-   ![Tool type selection](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-37.png)
+   ![Tool type selection](images/image-37.png)
 
    - **Target pattern:** `harrypotter`
    - **Tool ID:** `potter.chapter.5`
@@ -872,7 +872,7 @@ Sends an email to a recipient by name or email address. If a name is provided, t
 Fetches information and data from Harry Potter and the Sorcerer's Stone, Chapter 5 (Diagon Alley) from vector embeddings. Returns relevant passages, quotes, and context based on search queries about the chapter's content, characters, events, and themes.
 ```
 
-   ![Index search tool configuration](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-38.png)
+   ![Index search tool configuration](images/image-38.png)
 
 3. Click **Save**.
 
@@ -882,11 +882,11 @@ Fetches information and data from Harry Potter and the Sorcerer's Stone, Chapter
 
 1. Click **Skills** in the left pane.
 
-   ![Skills navigation](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-39.png)
+   ![Skills navigation](images/image-39.png)
 
 2. Click **Add skill**.
 
-   ![Create skill button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-40.png)
+   ![Create skill button](images/image-40.png)
 
 3. Fill in the skill details:
 
@@ -940,7 +940,7 @@ Express reluctance and bureaucratic suspicion before proceeding. Once satisfied 
 
 1. Click **Elastic AI Agents** in the left nav, then **+ New agent**.
 
-![new-agent-dialog](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-41.png)
+![new-agent-dialog](images/image-41.png)
 
 2. Configure the agent:
 
@@ -967,18 +967,18 @@ Use this tool when the user asks you to send an email. Accepts a recipient name 
 Your expert guide to Harry Potter and the Sorcerer's Stone, Chapter 5! I help you explore Diagon Alley, from Ollivander's wand shop to Gringotts Bank. Ask me about any scene, character, or magical detail from this iconic chapter.
 ```
 
-![Agent configuration form](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-42.png)
+![Agent configuration form](images/image-42.png)
 
 
 3. Click the **Tools** tab and select both `potter.chapter.5` and `potter.send.email`.
 
-   ![Tools tab](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-43.png)
+   ![Tools tab](images/image-43.png)
 
-   ![Tool selection](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-44.png)
+   ![Tool selection](images/image-44.png)
 
 4. Click the **Skills** tab, search for `ministry-of-magic`, and check the box to add it.
 
-   ![Skill assignment](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-45.png)
+   ![Skill assignment](images/image-45.png)
 
 5. Click **Save**.
 
@@ -988,7 +988,7 @@ Your expert guide to Harry Potter and the Sorcerer's Stone, Chapter 5! I help yo
 
 1. Click **Agents** in the left pane, then select **Potter Answers AI Agent**.
 
-   ![Agent list](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-46.png)
+   ![Agent list](images/image-46.png)
 
 2. Ask:
 
@@ -998,8 +998,8 @@ What is Quidditch, and which Hogwarts House does Hagrid warn Harry against, link
 
 3. Expand the **Thinking** block to see which tool the agent chose to call.
 
-   ![](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image48.png)
-   ![Agent reasoning block](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-47.png)
+   ![](images/image-48.png)
+   ![Agent reasoning block](images/image-47.png)
 
 4. Have the agent send an email summary:
 
@@ -1011,7 +1011,7 @@ send an email summary to YOUR-FIRST-NAME
 
 6. Test the Ministry of Magic skill — start a **new chat**.
 
-   ![New chat button](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-48.png)
+   ![New chat button](images/image-48.png)
 
 7. Type `/Ministry of Magic` followed by your question:
 
@@ -1019,7 +1019,7 @@ send an email summary to YOUR-FIRST-NAME
 /Ministry of Magic What is Quidditch, and which Hogwarts House does Hagrid warn Harry against, linking it to dark wizards?
 ```
 
-   ![Skill invocation](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-49.png)
+   ![Skill invocation](images/image-49.png)
 
 8. Notice how the AI responds in character as the Ministry official.
 
@@ -1143,7 +1143,7 @@ https://<YOUR-KIBANA-URL>/api/agent_builder/a2a/potter-answers.json
 4. Click **Connect**.
 5. Expand the agent card and review the JSON — look for capabilities, auth hints, and the A2A endpoint.
 
-![agent-card](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-50.png)
+![agent-card](images/image-50.png)
 
 ---
 
@@ -1166,7 +1166,7 @@ Describe the appearance of the famous pub entrance that only witches and wizards
 - The Debug Console shows A2A JSON-RPC messages, making the protocol transparent
 - The Spec Compliance check flags any deviations from the A2A specification
 
-![agent-card-full-o11y](https://github.com/elastic/meetups/blob/main/Mumbai/27-06-2026_Jina-Elastic-Genai-A2A-Workshop/images/image-51.png)
+![agent-card-full-o11y](images/image-51.png)
 
 ---
 

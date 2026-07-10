@@ -3,15 +3,15 @@ import type { RequestHandler } from './$types';
 import { sessions, stuckEvents } from '$lib/db';
 import { isAdminAuthed } from '$lib/server/auth';
 
-export const POST: RequestHandler = async ({ cookies, params }) => {
+export const DELETE: RequestHandler = async ({ cookies, params }) => {
 	if (!isAdminAuthed(cookies)) error(401, 'Unauthorized');
 
 	const row = await sessions.findById(params.sessionId);
 	if (!row) error(404, 'Session not found');
 	if (!row.stuckAt) return json({ error: 'Participant is not stuck' }, { status: 400 });
 
-	const blinkAt = await sessions.setBlink(params.sessionId);
-	await stuckEvents.resolveLatest(params.sessionId, 'blink');
+	await sessions.clearStuck(params.sessionId);
+	await stuckEvents.resolveLatest(params.sessionId, 'dismiss');
 
-	return json({ ok: true, blinkAt });
+	return json({ ok: true });
 };

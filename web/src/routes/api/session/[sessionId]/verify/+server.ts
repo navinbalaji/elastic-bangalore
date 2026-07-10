@@ -1,19 +1,15 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/db';
-import { participants, sessions } from '$lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { sessions } from '$lib/db';
+import { touchParticipant } from '$lib/db/store/helpers';
 import { VerifyClient, validateConfig } from '$lib/server/verify/client';
 import { jsonToStates, statesToJson } from '$lib/session';
 import { workshopComplete } from '$lib/steps';
+import { nowIso } from '$lib/db/store/utils';
 import type { WorkshopConfig } from '$lib/types';
 
 export const POST: RequestHandler = async ({ params, request }) => {
-	const [row] = await db
-		.select()
-		.from(sessions)
-		.where(eq(sessions.id, params.sessionId))
-		.limit(1);
+	const row = await sessions.findById(params.sessionId);
 	if (!row) error(404, 'Session not found');
 
 	const body = await request.json();
@@ -46,10 +42,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	if (configErr) return json({ error: configErr }, { status: 400 });
 
 	states[idx] = { ...st, status: 'running', reason: 'Verifying…' };
-	await db
-		.update(sessions)
-		.set({ stepStates: statesToJson(states), updatedAt: new Date() })
-		.where(eq(sessions.id, params.sessionId));
+	await sessions.updateStepStates(params.sessionId, statesToJson(states), row.completedAt);
 
 	const client = new VerifyClient(config);
 	const result = await client.verify(stepId);
@@ -61,19 +54,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	};
 
 	const complete = workshopComplete(states);
-	await db
-		.update(sessions)
-		.set({
-			stepStates: statesToJson(states),
-			completedAt: complete ? new Date() : null,
-			updatedAt: new Date()
-		})
-		.where(eq(sessions.id, params.sessionId));
-
-	await db
-		.update(participants)
-		.set({ lastSeenAt: new Date() })
-		.where(eq(participants.id, row.participantId));
+	await sessions.updateStepStates(
+		params.sessionId,
+		statesToJson(states),
+		complete ? nowIso() : null
+	);
+	await touchParticipant(row.participantId, params.sessionId);
 
 	return json({
 		stepId,

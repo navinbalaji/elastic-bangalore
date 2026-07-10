@@ -730,6 +730,46 @@ th {
 	border-color: var(--accent);
 }
 
+.stuck-card-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.5rem;
+}
+
+.stuck-card-time {
+	font-size: 0.75rem;
+	color: var(--warning);
+}
+
+.stuck-card-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	justify-content: flex-end;
+}
+
+.btn-dismiss-stuck {
+	background: rgba(245, 166, 35, 0.12);
+	border: 1px solid rgba(245, 166, 35, 0.45);
+	color: var(--warning);
+	font-size: 0.75rem;
+	padding: 0.3rem 0.65rem;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.btn-dismiss-stuck:hover:not(:disabled) {
+	background: rgba(245, 166, 35, 0.22);
+	border-color: var(--warning);
+}
+
+.btn-dismiss-stuck:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
 /* Chat / doubts */
 .chat-fab {
 	position: fixed;
@@ -867,6 +907,34 @@ th {
 	justify-content: space-between;
 	gap: 0.75rem;
 	margin-top: 0.4rem;
+}
+
+.chat-reply {
+	margin-top: 0.65rem;
+	padding: 0.65rem 0.75rem;
+	border-radius: 10px;
+	background: rgba(0, 191, 179, 0.1);
+	border: 1px solid rgba(0, 191, 179, 0.25);
+	font-size: 0.88rem;
+	line-height: 1.45;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.chat-reply-label {
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--accent);
+	margin-bottom: 0.25rem;
+}
+
+.chat-reply-time {
+	display: block;
+	margin-top: 0.35rem;
+	font-size: 0.68rem;
+	color: var(--muted);
 }
 
 .chat-bubble-actions,
@@ -1030,6 +1098,21 @@ th {
 
 .stuck-section {
 	margin-top: 0.25rem;
+}
+
+.stuck-section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 0.75rem;
+	margin-bottom: 1rem;
+	flex-wrap: wrap;
+}
+
+.stuck-section-header .doubts-poll-hint {
+	margin: 0;
+	flex: 1;
+	min-width: 12rem;
 }
 
 .participant-name {
@@ -1264,4 +1347,36 @@ th {
 	line-height: 1.5;
 	white-space: pre-wrap;
 	word-break: break-word;
+}
+
+.doubt-card-reply {
+	margin-top: 0.85rem;
+	padding: 0.75rem 0.85rem;
+	border-radius: 10px;
+	background: rgba(0, 191, 179, 0.08);
+	border: 1px solid rgba(0, 191, 179, 0.22);
+}
+
+.doubt-card-reply-label {
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--accent);
+	margin-bottom: 0.35rem;
+}
+
+.doubt-card-reply-message {
+	margin: 0;
+	font-size: 0.88rem;
+	line-height: 1.5;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.doubt-card-reply-time {
+	display: block;
+	margin-top: 0.35rem;
+	font-size: 0.72rem;
+	color: var(--muted);
 }

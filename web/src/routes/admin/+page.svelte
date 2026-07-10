@@ -24,6 +24,8 @@
 	type Doubt = {
 		id: string;
 		message: string;
+		reply: string | null;
+		repliedAt: string | null;
 		createdAt: string;
 		sessionId: string;
 		participantName: string;
@@ -76,6 +78,7 @@
 	let participants = $state<Participant[]>([]);
 	let doubts = $state<Doubt[]>([]);
 	let blinking = $state<Record<string, boolean>>({});
+	let dismissing = $state<Record<string, boolean>>({});
 	let activeTab = $state<'progress' | 'stuck' | 'questions'>('progress');
 	let activeModuleIndex = $state(0);
 	let refreshing = $state(false);
@@ -86,6 +89,8 @@
 	let resetSuccess = $state('');
 	let editingDoubtId = $state<string | null>(null);
 	let editingDoubtMessage = $state('');
+	let replyingDoubtId = $state<string | null>(null);
+	let replyingMessage = $state('');
 	let doubtActionId = $state<string | null>(null);
 	let doubtsPollTimer: ReturnType<typeof setInterval> | undefined;
 	let participantsPollTimer: ReturnType<typeof setInterval> | undefined;
@@ -194,6 +199,16 @@
 		}
 	}
 
+	async function dismissStuck(sessionId: string) {
+		dismissing[sessionId] = true;
+		try {
+			const res = await fetch(`/api/admin/participants/${sessionId}/stuck`, { method: 'DELETE' });
+			if (res.ok) await loadParticipants();
+		} finally {
+			dismissing[sessionId] = false;
+		}
+	}
+
 	async function refreshProgress() {
 		refreshing = true;
 		try {
@@ -252,6 +267,7 @@
 	}
 
 	function startEditDoubt(doubt: Doubt) {
+		cancelReplyDoubt();
 		editingDoubtId = doubt.id;
 		editingDoubtMessage = doubt.message;
 	}
@@ -259,6 +275,37 @@
 	function cancelEditDoubt() {
 		editingDoubtId = null;
 		editingDoubtMessage = '';
+	}
+
+	function startReplyDoubt(doubt: Doubt) {
+		cancelEditDoubt();
+		replyingDoubtId = doubt.id;
+		replyingMessage = doubt.reply ?? '';
+	}
+
+	function cancelReplyDoubt() {
+		replyingDoubtId = null;
+		replyingMessage = '';
+	}
+
+	async function saveReplyDoubt(doubtId: string) {
+		const reply = replyingMessage.trim();
+		if (!reply) return;
+
+		doubtActionId = doubtId;
+		try {
+			const res = await fetch(`/api/admin/doubts/${doubtId}/reply`, {
+				method: 'PATCH',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ reply })
+			});
+			const json = await res.json();
+			if (!res.ok) return;
+			doubts = doubts.map((d) => (d.id === doubtId ? json.doubt : d));
+			cancelReplyDoubt();
+		} finally {
+			doubtActionId = null;
+		}
 	}
 
 	async function saveEditDoubt(doubtId: string) {
@@ -290,6 +337,7 @@
 			if (!res.ok) return;
 			doubts = doubts.filter((d) => d.id !== doubtId);
 			if (editingDoubtId === doubtId) cancelEditDoubt();
+			if (replyingDoubtId === doubtId) cancelReplyDoubt();
 		} finally {
 			doubtActionId = null;
 		}
@@ -485,6 +533,15 @@
 													>
 														{blinking[entry.sessionId] ? '…' : 'Blink'}
 													</button>
+													<button
+														type="button"
+														class="btn btn-secondary"
+														style="font-size:0.7rem;padding:0.25rem 0.45rem"
+														disabled={dismissing[entry.sessionId]}
+														onclick={() => dismissStuck(entry.sessionId)}
+													>
+														{dismissing[entry.sessionId] ? '…' : 'Dismiss'}
+													</button>
 												{/if}
 											</div>
 										</div>
@@ -532,6 +589,15 @@
 													>
 														{blinking[entry.sessionId] ? '…' : 'Blink'}
 													</button>
+													<button
+														type="button"
+														class="btn btn-secondary"
+														style="font-size:0.7rem;padding:0.25rem 0.45rem"
+														disabled={dismissing[entry.sessionId]}
+														onclick={() => dismissStuck(entry.sessionId)}
+													>
+														{dismissing[entry.sessionId] ? '…' : 'Dismiss'}
+													</button>
 												{/if}
 											</div>
 										</div>
@@ -544,10 +610,20 @@
 			{/if}
 		{:else if activeTab === 'stuck'}
 			<section class="stuck-section">
-				<p class="doubts-poll-hint">
-					Participants who tapped <strong>I'm stuck</strong> in the workshop. Blink their screen to let
-					them know help is on the way.
-				</p>
+				<div class="stuck-section-header">
+					<p class="doubts-poll-hint">
+						Participants who tapped <strong>I'm stuck</strong> in the workshop. Blink their screen to
+						acknowledge, or dismiss when resolved. Auto-refresh every 5s.
+					</p>
+					<button
+						class="btn btn-secondary"
+						type="button"
+						disabled={refreshing}
+						onclick={refreshProgress}
+					>
+						{refreshing ? 'Refreshing…' : 'Refresh stuck'}
+					</button>
+				</div>
 				{#if stuckParticipants.length === 0}
 					<div class="card" style="text-align:center;color:var(--muted);padding:3rem">
 						No one is stuck right now
@@ -569,21 +645,31 @@
 											{p.userKey.slice(0, 8)}…
 										</div>
 									</div>
-									<div style="text-align:right">
+									<div class="stuck-card-actions">
 										<time
-											style="font-size:0.75rem;color:var(--warning);display:block;margin-bottom:0.5rem"
+											class="stuck-card-time"
 											datetime={p.stuckAt ?? undefined}
 										>
 											{p.stuckAt ? fmt(p.stuckAt) : ''}
 										</time>
-										<button
-											type="button"
-											class="btn-blink"
-											disabled={blinking[p.sessionId]}
-											onclick={() => blinkParticipant(p.sessionId)}
-										>
-											{blinking[p.sessionId] ? '…' : 'Blink screen'}
-										</button>
+										<div class="stuck-card-buttons">
+											<button
+												type="button"
+												class="btn-blink"
+												disabled={blinking[p.sessionId] || dismissing[p.sessionId]}
+												onclick={() => blinkParticipant(p.sessionId)}
+											>
+												{blinking[p.sessionId] ? '…' : 'Blink screen'}
+											</button>
+											<button
+												type="button"
+												class="btn-dismiss-stuck"
+												disabled={dismissing[p.sessionId] || blinking[p.sessionId]}
+												onclick={() => dismissStuck(p.sessionId)}
+											>
+												{dismissing[p.sessionId] ? '…' : 'Dismiss'}
+											</button>
+										</div>
 									</div>
 								</div>
 								<div style="font-size:0.85rem;color:var(--muted)">
@@ -614,8 +700,16 @@
 									</div>
 									<div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end">
 										<time class="doubt-card-time" datetime={doubt.createdAt}>{fmt(doubt.createdAt)}</time>
-										{#if editingDoubtId !== doubt.id}
+										{#if editingDoubtId !== doubt.id && replyingDoubtId !== doubt.id}
 											<div class="doubt-card-actions">
+												<button
+													type="button"
+													class="chat-text-btn primary"
+													disabled={doubtActionId === doubt.id}
+													onclick={() => startReplyDoubt(doubt)}
+												>
+													{doubt.reply ? 'Edit answer' : 'Answer'}
+												</button>
 												<button
 													type="button"
 													class="chat-text-btn"
@@ -657,8 +751,46 @@
 											{doubtActionId === doubt.id ? 'Saving…' : 'Save'}
 										</button>
 									</div>
+								{:else if replyingDoubtId === doubt.id}
+									<p class="doubt-card-message">{doubt.message}</p>
+									<label class="label" for="reply-{doubt.id}" style="margin-top:0.75rem;display:block">Your answer</label>
+									<textarea
+										id="reply-{doubt.id}"
+										class="chat-edit-input"
+										bind:value={replyingMessage}
+										maxlength="2000"
+										placeholder="Type your reply to the participant…"
+										disabled={doubtActionId === doubt.id}
+									></textarea>
+									<div class="chat-bubble-actions" style="margin-top:0.5rem">
+										<button
+											type="button"
+											class="chat-text-btn"
+											disabled={doubtActionId === doubt.id}
+											onclick={cancelReplyDoubt}
+										>Cancel</button>
+										<button
+											type="button"
+											class="chat-text-btn primary"
+											disabled={doubtActionId === doubt.id || !replyingMessage.trim()}
+											onclick={() => saveReplyDoubt(doubt.id)}
+										>
+											{doubtActionId === doubt.id ? 'Sending…' : 'Send answer'}
+										</button>
+									</div>
 								{:else}
 									<p class="doubt-card-message">{doubt.message}</p>
+									{#if doubt.reply}
+										<div class="doubt-card-reply">
+											<div class="doubt-card-reply-label">Facilitator answer</div>
+											<p class="doubt-card-reply-message">{doubt.reply}</p>
+											{#if doubt.repliedAt}
+												<time class="doubt-card-reply-time" datetime={doubt.repliedAt}>
+													{fmt(doubt.repliedAt)}
+												</time>
+											{/if}
+										</div>
+									{/if}
 								{/if}
 							</article>
 						{/each}
